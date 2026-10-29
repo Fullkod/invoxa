@@ -120,6 +120,18 @@ export function AppShell({
             </nav>
           )}
           {children}
+          <footer className="mt-10 flex justify-end border-t border-border pt-3 text-[11px] text-muted">
+            <a
+              href="https://fullkod.com/?ref=invoxa"
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-1.5 hover:text-text-sec"
+            >
+              Desarrollado por
+              <img src="/brand/fullkod-symbol.svg" alt="" className="h-3 w-3" />
+              <span className="font-semibold text-text-sec">Fullkod</span>
+            </a>
+          </footer>
         </main>
       </div>
 

@@ -84,7 +84,7 @@ export function LoginPage() {
 
         <div className="relative max-w-[460px]">
           <p className="text-xs uppercase tracking-[0.18em] text-white/60">
-            Informage Studios
+            Un producto de Fullkod
           </p>
           <h2 className="font-display mt-3 text-[44px] font-medium leading-[1.05] tracking-[-0.02em]">
             Facturas mensuales,
@@ -96,8 +96,17 @@ export function LoginPage() {
           </p>
         </div>
 
-        <div className="relative text-xs text-white/45">
-          © {new Date().getFullYear()} Informage Studios — Uso interno
+        <div className="relative flex items-center gap-1.5 text-xs text-white/45">
+          © {new Date().getFullYear()} Invoxa · Desarrollado por
+          <a
+            href="https://fullkod.com/?ref=invoxa"
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center gap-1.5 font-semibold text-white/70 hover:text-white"
+          >
+            <img src="/brand/fullkod-symbol-reversed.svg" alt="" className="h-3.5 w-3.5" />
+            Fullkod
+          </a>
         </div>
       </aside>
 

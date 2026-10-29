@@ -45,7 +45,7 @@ export const LANDING_STRINGS: Record<LandingLang, LandingStrings> = {
   es: {
     nav: { product: 'Producto', how: 'Cómo funciona', cases: 'Casos', faq: 'FAQ', login: 'Entrar' },
     hero: {
-      eyebrow: 'INVOXA · BY INFORMAGE STUDIOS',
+      eyebrow: 'INVOXA · BY FULLKOD',
       title: 'Facturar deja\nde ser una pelea.',
       subtitle:
         'Invoxa centraliza las horas, los proyectos y las facturas de tu equipo creativo. Tú apruebas — el sistema entrega el PDF al cliente.',
@@ -142,7 +142,7 @@ export const LANDING_STRINGS: Record<LandingLang, LandingStrings> = {
   en: {
     nav: { product: 'Product', how: 'How it works', cases: 'Customers', faq: 'FAQ', login: 'Sign in' },
     hero: {
-      eyebrow: 'INVOXA · BY INFORMAGE STUDIOS',
+      eyebrow: 'INVOXA · BY FULLKOD',
       title: 'Billing stops\nbeing a fight.',
       subtitle:
         'Invoxa centralizes hours, projects and invoices for your creative team. You approve — the system delivers the PDF to the client.',
