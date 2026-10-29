@@ -8,6 +8,7 @@ import { Button } from '../../components/ui/Button'
 import { Field } from '../../components/ui/Field'
 import { useDocumentMeta } from '../../lib/seo/useDocumentMeta'
 import { supabase } from '../../lib/supabase/client'
+import { FullkodCredit } from '../../components/brand/FullkodCredit'
 
 const schema = z.object({
   email: z.string().email('Email inválido'),
@@ -49,7 +50,7 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-subtle p-6">
+    <main className="relative flex min-h-screen items-center justify-center bg-subtle p-6">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-sm rounded-2xl border border-border bg-bg p-8 shadow-card"
@@ -104,6 +105,9 @@ export function ForgotPasswordPage() {
           <ArrowLeft size={13} /> Volver al login
         </Link>
       </form>
+      <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center px-6">
+        <FullkodCredit className="pointer-events-auto" />
+      </div>
     </main>
   )
 }

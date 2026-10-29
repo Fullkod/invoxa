@@ -8,6 +8,7 @@ import { Button } from '../../components/ui/Button'
 import { Field } from '../../components/ui/Field'
 import { useDocumentMeta } from '../../lib/seo/useDocumentMeta'
 import { supabase } from '../../lib/supabase/client'
+import { FullkodCredit } from '../../components/brand/FullkodCredit'
 
 const schema = z
   .object({
@@ -57,7 +58,7 @@ export function AcceptInvitePage() {
 
   if (hasSession === false) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-subtle p-6 text-center">
+      <main className="relative flex min-h-screen items-center justify-center bg-subtle p-6 text-center">
         <div className="max-w-sm rounded-2xl border border-border bg-bg p-8 shadow-card">
           <h1 className="font-display text-lg font-bold text-text">
             Enlace inválido o expirado
@@ -66,12 +67,15 @@ export function AcceptInvitePage() {
             Pídele al administrador una nueva invitación.
           </p>
         </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center px-6">
+          <FullkodCredit className="pointer-events-auto" />
+        </div>
       </main>
     )
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-subtle p-6">
+    <main className="relative flex min-h-screen items-center justify-center bg-subtle p-6">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-sm rounded-2xl border border-border bg-bg p-8 shadow-card"
@@ -120,6 +124,9 @@ export function AcceptInvitePage() {
           {isSubmitting ? 'Guardando…' : 'Guardar y continuar'}
         </Button>
       </form>
+      <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center px-6">
+        <FullkodCredit className="pointer-events-auto" />
+      </div>
     </main>
   )
 }

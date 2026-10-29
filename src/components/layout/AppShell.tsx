@@ -7,6 +7,7 @@ import { RouteFallback } from '../ui/RouteFallback'
 import { MobileBottomNav } from './MobileBottomNav'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
+import { FullkodCredit } from '../brand/FullkodCredit'
 
 type Crumb = { label: string }
 
@@ -121,16 +122,7 @@ export function AppShell({
           )}
           {children}
           <footer className="mt-10 flex justify-end border-t border-border pt-3 text-[11px] text-muted">
-            <a
-              href="https://fullkod.com/?ref=invoxa"
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center gap-1.5 hover:text-text-sec"
-            >
-              Desarrollado por
-              <img src="/brand/fullkod-symbol.svg" alt="" className="h-3 w-3" />
-              <span className="font-semibold text-text-sec">Fullkod</span>
-            </a>
+            <FullkodCredit />
           </footer>
         </main>
       </div>
