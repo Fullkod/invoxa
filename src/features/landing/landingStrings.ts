@@ -131,7 +131,7 @@ export const LANDING_STRINGS: Record<LandingLang, LandingStrings> = {
       btn: 'Pedir acceso a la beta',
     },
     footer: {
-      by: 'INVOXA · UN PRODUCTO DE INFORMAGE STUDIOS · 2026',
+      by: 'INVOXA · UN PRODUCTO DE',
       cols: [
         { t: 'Producto', l: ['Características', 'Cómo funciona', 'Precios', 'Roadmap'] },
         { t: 'Empresa', l: ['Sobre nosotros', 'Casos', 'Contacto'] },
@@ -228,7 +228,7 @@ export const LANDING_STRINGS: Record<LandingLang, LandingStrings> = {
       btn: 'Request beta access',
     },
     footer: {
-      by: 'INVOXA · A PRODUCT BY INFORMAGE STUDIOS · 2026',
+      by: 'INVOXA · A PRODUCT BY',
       cols: [
         { t: 'Product', l: ['Features', 'How it works', 'Pricing', 'Roadmap'] },
         { t: 'Company', l: ['About', 'Cases', 'Contact'] },

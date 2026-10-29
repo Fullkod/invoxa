@@ -1127,7 +1127,26 @@ function Footer({ s, desktop }: { s: LandingStrings; desktop: boolean }) {
               invoxa
             </span>
           </div>
-          <div style={{ fontSize: 11, fontFamily: FONTS.mono }}>{s.footer.by}</div>
+          <div style={{ fontSize: 11, fontFamily: FONTS.mono }}>
+            {s.footer.by}{' '}
+            <a
+              href="https://fullkod.com/?ref=invoxa"
+              target="_blank"
+              rel="noopener"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                verticalAlign: 'bottom',
+                color: COLORS.cream,
+                textDecoration: 'none',
+              }}
+            >
+              <img src="/brand/fullkod-symbol-reversed.svg" alt="" width={12} height={12} />
+              FULLKOD
+            </a>{' '}
+            · 2026
+          </div>
         </div>
         {s.footer.cols.map((c, i) => (
           <div key={i}>
