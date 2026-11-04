@@ -1,6 +1,6 @@
 # PRP-001: Invoxa multi-empresa (SaaS) con super admin
 
-> **Estado**: APROBADO (Roberto, 2026-11-04) — EN PROGRESO
+> **Estado**: COMPLETADO (2026-11-04) — pendiente de revisión de Roberto en Tasknic
 > **Fecha**: 2026-11-04
 > **Proyecto**: Invoxa
 > **Pedido por**: Roberto Gabriel Cabrera Álvarez
@@ -218,5 +218,12 @@ actualización de `BUSINESS_LOGIC.md` y la memoria.
 - NO aplicar migraciones en producción sin respaldo ni permiso explícito.
 
 ---
+
+## Pendiente tras el PRP
+- Probar `create-company` con una empresa real (envía la invitación al correo real del admin).
+- Envío real de correos (sigue pendiente, ver memoria): con varias empresas el SMTP de Supabase se queda corto.
+- Valorar plan Pro de Supabase antes de meter clientes reales.
+- Bug previo (no de este PRP): en el PDF de factura, la línea "Cuenta:" de los datos de pago no hace
+  salto de línea y se sale de la página si el texto es largo.
 
 *PRP aprobado por Roberto el 2026-11-04.*

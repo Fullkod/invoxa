@@ -11,11 +11,18 @@ sus colaboradores externos. Es un producto de **Fullkod**. Cada colaborador emit
 factura** a Informage Studios que agrupa todo lo que trabajó en todos sus proyectos, con un número
 consecutivo propio, y la descarga en PDF. El admin la revisa, la aprueba y la marca como pagada.
 
-Es mono-empresa: el destinatario de todas las facturas es Informage Studios S.L.U. (datos fijos en el PDF).
+Es **multi-empresa** desde el 2026-11-04 (PRP-001): cada empresa (`companies`) tiene su admin, sus
+colaboradores, proyectos y facturas, aislados de las demás por RLS. El destinatario de cada factura es la
+empresa del colaborador (datos de `companies`). Informage Studios es la primera empresa. Fullkod gestiona
+todas con el rol **super admin**. No hay registro público ni cobro de suscripciones.
 
 ## Actores
 
-- **Admin** (`profiles.role = 'admin'`): invita y borra usuarios, crea proyectos, asigna miembros y
+- **Super admin** (`role = 'super_admin'`, Fullkod; hoy `invoxa@fullkod.com`): no pertenece a ninguna
+  empresa. En `/super/companies` crea empresas (con la invitación a su primer admin), edita sus datos,
+  las activa/desactiva y **entra** en una (`profiles.active_company_id`): dentro actúa como su admin.
+  Solo se crea a mano: el email debe estar en `super_admin_allowlist`.
+- **Admin** (`profiles.role = 'admin'`) **de su empresa**: invita y borra usuarios, crea proyectos, asigna miembros y
   sus tarifas, solicita facturas (individual o masivamente), revisa y cambia el estado de las facturas,
   cambia consecutivos directamente y resuelve las solicitudes de cambio de los usuarios. Puede generar
   facturas e informes en nombre de cualquier usuario.
@@ -23,7 +30,19 @@ Es mono-empresa: el destinatario de todas las facturas es Informage Studios S.L.
   hora), genera su factura mensual, descarga PDFs, genera su informe de horas y solicita cambios de
   consecutivo.
 
-No hay registro público: **solo se entra por invitación**.
+No hay registro público: **solo se entra por invitación**, y el invitado entra en la empresa del admin
+que lo invita. Los usuarios de una empresa desactivada no pueden usar la app.
+
+### Aislamiento entre empresas
+- Toda tabla de negocio tiene `company_id`, que rellenan triggers en el servidor (desde el usuario, la
+  factura o la sesión); el cliente no puede elegirla.
+- RLS: un admin solo ve y toca filas con `is_company_admin(company_id)`; proyectos visibles solo de tu
+  empresa; un admin no puede crear super admins ni mover usuarios de empresa.
+- Edge Functions (service role): comprueban a mano que el objetivo es de la empresa del llamante
+  (`supabase/functions/_shared/company.ts`).
+- Consecutivo: `{PREFIJO_EMPRESA}-{USER_CODE}-{AÑO}-{NNNN}` (Informage = `INF`); `user_code` y número
+  de factura son únicos **por empresa**.
+- Prueba de aislamiento: `supabase/tests/company_isolation_test.sql`.
 
 ## Entidades
 

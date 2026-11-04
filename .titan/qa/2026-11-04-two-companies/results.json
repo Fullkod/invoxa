@@ -1,0 +1,68 @@
+[
+  {
+    "name": "qa-dashboard",
+    "ok": true,
+    "detail": "Dashboard de QA Temporal",
+    "shot": "screenshots/01-qa-dashboard.png"
+  },
+  {
+    "name": "qa-users-empty",
+    "ok": true,
+    "detail": "Ningún usuario de Informage",
+    "shot": "screenshots/02-qa-users.png"
+  },
+  {
+    "name": "qa-invoices-empty",
+    "ok": true,
+    "detail": "Ninguna factura de Informage",
+    "shot": "screenshots/03-qa-invoices.png"
+  },
+  {
+    "name": "qa-blocks-generate-invoice-pdf",
+    "ok": true,
+    "detail": "403 {\"error\":\"Forbidden\"}",
+    "shot": null
+  },
+  {
+    "name": "qa-blocks-generate-tasks-report-pdf",
+    "ok": true,
+    "detail": "403 {\"error\":\"Forbidden\"}",
+    "shot": null
+  },
+  {
+    "name": "qa-blocks-generate-invoice",
+    "ok": true,
+    "detail": "403 {\"error\":\"Forbidden — solo el admin puede generar facturas a otros usuarios\"}",
+    "shot": null
+  },
+  {
+    "name": "qa-blocks-request-invoice",
+    "ok": true,
+    "detail": "404 {\"error\":\"Usuario no encontrado\"}",
+    "shot": null
+  },
+  {
+    "name": "qa-blocks-change-invoice-number",
+    "ok": true,
+    "detail": "404 {\"error\":\"Factura no encontrada\"}",
+    "shot": null
+  },
+  {
+    "name": "qa-blocks-delete-user",
+    "ok": true,
+    "detail": "404 {\"error\":\"El usuario no existe.\"}",
+    "shot": null
+  },
+  {
+    "name": "qa-bulk-only-own-company",
+    "ok": true,
+    "detail": "200 {\"success\":true,\"summary\":{\"created\":0,\"refreshed\":0,\"skipped\":[]}}",
+    "shot": null
+  },
+  {
+    "name": "informage-pdf-regenerates",
+    "ok": true,
+    "detail": "200 {\"success\":true,\"pdf_path\":\"e0b535ee-d812-4b92-ab37-014169f71487/4876f0d7-031f-4039-8e05-cf752341d7dc.pdf\"}",
+    "shot": "screenshots/04-informage-dashboard.png"
+  }
+]

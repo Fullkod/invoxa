@@ -13,5 +13,5 @@ Fuente: inspección del código, `docs/instructions.md` y `git log` (2026-11-04)
   notificaciones in-app en tiempo real, borrado protegido de usuarios.
 - **Bloqueante del MVP del brief:** el envío real de correos (solo sale la invitación). Ver
   [pendientes](2026-11-04-pendientes-y-riesgos.md).
-- El destinatario de las facturas (Informage) está fijo en `supabase/functions/generate-invoice-pdf`:
-  si cambian sus datos fiscales hay que editar el código y regenerar los PDF.
+- ~~El destinatario de las facturas (Informage) está fijo en `generate-invoice-pdf`~~ (superado
+  2026-11-04): ahora sale de `companies`. Ver [multi-empresa](2026-11-04-multi-empresa.md).
