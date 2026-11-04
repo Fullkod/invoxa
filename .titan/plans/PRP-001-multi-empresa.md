@@ -168,6 +168,16 @@ actualización de `BUSINESS_LOGIC.md` y la memoria.
 - **Fix**: comprobar los objetos en remoto y `supabase migration repair --status applied <versiones>`; luego `db push --dry-run`.
 - **Aplicar en**: cada fase con migraciones (1 y 2): siempre `migration list` + `--dry-run` antes de `db push`.
 
+### 2026-11-04: Fase 1 — rellenar company_id sin tocar el cliente
+- **Decisión**: `company_id` lo rellenan triggers (`set_company_from_user`, `set_company_from_invoice`,
+  `set_company_from_session`), no el cliente. En tablas con `user_id` el trigger **siempre** pone la
+  empresa del usuario (ignora lo que mande el cliente). Proyecto y miembros/tareas/líneas deben ser de la
+  misma empresa (`check_project_company`, triggers `*_zcheck_*` para que corran después).
+- **Pendiente Fase 3**: quitar los fallbacks "si solo hay una empresa" de `set_company_from_session` y
+  `handle_new_user` cuando `invite-user`/Edge Functions manden `company_id`. `email_logs.company_id` y
+  `profiles.company_id` siguen nullable (CHECK de super admin en Fase 2).
+- Informage: id fijo `5b1c2e0a-7d43-4f8e-9a61-3c0f5e2d9b17`, prefijo `INF`.
+
 ---
 
 ## Gotchas
