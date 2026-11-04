@@ -9,6 +9,7 @@ import { Card, CardBody, CardHeader } from '../../../components/ui/Card'
 import { Field } from '../../../components/ui/Field'
 import { Select } from '../../../components/ui/Select'
 import { CompensationFields } from '../projects/CompensationFields'
+import { useCurrentCompany } from '../../companies/queries'
 import { useProjects } from '../projects/queries'
 import { useInviteUser } from './inviteUser'
 import { inviteUserSchema, type InviteUserFormValues } from './userSchema'
@@ -20,6 +21,7 @@ export function InviteUserPage() {
   const [warning, setWarning] = useState<string | null>(null)
 
   const { data: projects = [] } = useProjects()
+  const { data: company } = useCurrentCompany()
 
   const activeProjectOptions = useMemo(
     () => [
@@ -122,7 +124,7 @@ export function InviteUserPage() {
               <Field
                 label="Código de usuario (opcional)"
                 placeholder="Ej. RCA"
-                hint="Se usa en el consecutivo de facturas: INF-{CODIGO}-2026-0001. Hasta 8 caracteres, solo mayúsculas y números."
+                hint={`Se usa en el consecutivo de facturas: ${company?.invoice_prefix ?? 'PREFIJO'}-{CODIGO}-2026-0001. Hasta 8 caracteres, solo mayúsculas y números.`}
                 error={errors.user_code?.message}
                 {...register('user_code', {
                   onChange: (e) => {

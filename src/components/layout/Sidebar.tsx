@@ -1,4 +1,5 @@
 import {
+  Building2,
   ChevronDown,
   Files,
   FileText,
@@ -17,7 +18,9 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import logoHorizontal from '/brand/imagotipo-horizontal-cafe.svg'
 import isotipoCafe from '/brand/isotipo-cafe.svg'
+import { canUseAdminArea, roleLabel } from '../../features/auth/roles'
 import { useAuth } from '../../features/auth/useAuth'
+import { useCurrentCompany } from '../../features/companies/queries'
 import type { Profile, UserRole } from '../../types/profile'
 
 type NavItem = {
@@ -68,6 +71,20 @@ const adminSections: NavSection[] = [
   },
 ]
 
+const superSection: NavSection = {
+  title: 'Super admin',
+  items: [
+    { to: '/super/companies', label: 'Empresas', icon: <Building2 size={18} /> },
+  ],
+}
+
+function sectionsFor(profile: Profile): NavSection[] {
+  if (profile.role === 'super_admin') {
+    return canUseAdminArea(profile) ? [superSection, ...adminSections] : [superSection]
+  }
+  return profile.role === 'admin' ? adminSections : userSections
+}
+
 const userSections: NavSection[] = [
   {
     title: 'Principal',
@@ -107,7 +124,10 @@ export function Sidebar({
   collapsed?: boolean
   onToggleCollapsed?: () => void
 }) {
-  const sections = profile.role === 'admin' ? adminSections : userSections
+  const sections = sectionsFor(profile)
+  const { data: company } = useCurrentCompany()
+  const isSuperAdmin = profile.role === 'super_admin'
+  const companyName = company?.name ?? (isSuperAdmin ? 'Sin empresa' : '…')
   const initials = getInitials(profile.full_name || profile.email)
 
   return (
@@ -160,22 +180,14 @@ export function Sidebar({
         )}
       </div>
 
-      {/* Org card */}
+      {/* Org card — for the super admin it opens the company switcher */}
       {!collapsed && (
-        <div className="mx-3 mb-3.5 flex cursor-pointer items-center gap-2.5 rounded-xl border border-border bg-subtle px-3 py-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-blue text-[11px] font-bold text-white">
-            IS
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-xs font-semibold text-text">
-              Informage Studios
-            </div>
-            <div className="mt-0.5 text-[10px] capitalize text-muted">
-              {profile.role}
-            </div>
-          </div>
-          <ChevronDown size={14} className="text-muted" />
-        </div>
+        <OrgCard
+          companyName={companyName}
+          roleText={roleLabel(profile.role)}
+          switchTo={isSuperAdmin ? '/super/companies' : undefined}
+          onNavigate={onNavigate}
+        />
       )}
 
       {/* Sections */}
@@ -361,6 +373,44 @@ function SidebarSection({
         )
       })}
     </div>
+  )
+}
+
+function OrgCard({
+  companyName,
+  roleText,
+  switchTo,
+  onNavigate,
+}: {
+  companyName: string
+  roleText: string
+  switchTo?: string
+  onNavigate?: () => void
+}) {
+  const body = (
+    <>
+      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-blue text-[11px] font-bold text-white">
+        {getInitials(companyName) || '·'}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-xs font-semibold text-text">{companyName}</div>
+        <div className="mt-0.5 text-[10px] text-muted">{roleText}</div>
+      </div>
+      {switchTo && <ChevronDown size={14} className="text-muted" />}
+    </>
+  )
+  const className =
+    'mx-3 mb-3.5 flex items-center gap-2.5 rounded-xl border border-border bg-subtle px-3 py-2.5'
+  if (!switchTo) return <div className={className}>{body}</div>
+  return (
+    <Link
+      to={switchTo}
+      onClick={onNavigate}
+      title="Cambiar de empresa"
+      className={`${className} transition hover:border-border-strong`}
+    >
+      {body}
+    </Link>
   )
 }
 

@@ -1,8 +1,17 @@
 import type { ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
 import type { UserRole } from '../../types/profile'
+import { useCurrentCompany } from '../companies/queries'
+import { canUseAdminArea, homePathFor } from './roles'
+import { useAuth } from './useAuth'
 import { useProfile } from './useProfile'
 
+/**
+ * Area guard.
+ * - "admin": company admins, and the super admin once inside a company.
+ * - "super_admin" / "user": exactly that role.
+ * Users of a deactivated company are stopped here.
+ */
 export function RoleRoute({
   role,
   children,
@@ -11,6 +20,8 @@ export function RoleRoute({
   children: ReactNode
 }) {
   const { data: profile, isLoading, error } = useProfile()
+  const { data: company } = useCurrentCompany()
+  const { signOut } = useAuth()
 
   if (isLoading) {
     return (
@@ -28,9 +39,26 @@ export function RoleRoute({
     )
   }
 
-  if (profile.role !== role) {
-    const fallback = profile.role === 'admin' ? '/admin/dashboard' : '/app/dashboard'
-    return <Navigate to={fallback} replace />
+  if (profile.role !== 'super_admin' && company?.status === 'inactive') {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
+        <p className="max-w-sm text-sm text-text-sec">
+          Tu empresa está desactivada en Invoxa. Contacta con Fullkod si crees que es un error.
+        </p>
+        <button
+          type="button"
+          onClick={() => void signOut()}
+          className="text-sm font-semibold text-primary hover:underline"
+        >
+          Cerrar sesión
+        </button>
+      </div>
+    )
+  }
+
+  const allowed = role === 'admin' ? canUseAdminArea(profile) : profile.role === role
+  if (!allowed) {
+    return <Navigate to={homePathFor(profile)} replace />
   }
 
   return <>{children}</>

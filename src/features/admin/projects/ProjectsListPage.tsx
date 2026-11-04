@@ -5,6 +5,7 @@ import { AppShell } from '../../../components/layout/AppShell'
 import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
 import { Pill } from '../../../components/ui/Pill'
+import { useCurrentCompany } from '../../companies/queries'
 import { useProjects } from './queries'
 
 export function ProjectsListPage() {
@@ -12,6 +13,7 @@ export function ProjectsListPage() {
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all')
   const [search, setSearch] = useState('')
   const { data: projects = [], isLoading, error } = useProjects()
+  const { data: company } = useCurrentCompany()
 
   const filtered = useMemo(() => {
     return projects.filter((p) => {
@@ -25,7 +27,7 @@ export function ProjectsListPage() {
   return (
     <AppShell
       title="Proyectos"
-      subtitle="Gestiona los proyectos de Informage Studios"
+      subtitle={`Gestiona los proyectos de ${company?.name ?? 'tu empresa'}`}
       breadcrumbs={[{ label: 'Operación' }, { label: 'Proyectos' }]}
       rightAction={
         <Button

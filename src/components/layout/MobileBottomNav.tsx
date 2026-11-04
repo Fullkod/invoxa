@@ -1,4 +1,5 @@
 import {
+  Building2,
   FileText,
   Files,
   FolderKanban,
@@ -8,6 +9,7 @@ import {
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { canUseAdminArea } from '../../features/auth/roles'
 import type { Profile } from '../../types/profile'
 
 type Tab = {
@@ -47,6 +49,21 @@ const adminTabs: Tab[] = [
   },
 ]
 
+const companiesTab: Tab = {
+  to: '/super/companies',
+  label: 'Empresas',
+  icon: <Building2 size={20} />,
+  match: (p) => p.startsWith('/super'),
+}
+
+function tabsFor(profile: Profile): Tab[] {
+  if (profile.role === 'super_admin') {
+    // Keep 4 tabs: companies replaces "Inicio" inside a company.
+    return canUseAdminArea(profile) ? [companiesTab, ...adminTabs.slice(1)] : [companiesTab]
+  }
+  return profile.role === 'admin' ? adminTabs : userTabs
+}
+
 const userTabs: Tab[] = [
   {
     to: '/app/dashboard',
@@ -78,7 +95,7 @@ const userTabs: Tab[] = [
 
 export function MobileBottomNav({ profile }: { profile: Profile }) {
   const location = useLocation()
-  const tabs = profile.role === 'admin' ? adminTabs : userTabs
+  const tabs = tabsFor(profile)
 
   return (
     <nav

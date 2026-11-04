@@ -21,6 +21,7 @@ import { StatCard } from '../../../components/ui/StatCard'
 import { useProfile } from '../../auth/useProfile'
 import type { InvoiceStatus, InvoiceWithUser } from '../../../types/invoice'
 import { useInvoiceNumberChangeRequests } from '../../invoiceNumberChange/queries'
+import { useCurrentCompany } from '../../companies/queries'
 import { useAdminDashboardStats, useRecentInvoices } from './queries'
 
 const STATUS_LABEL: Record<InvoiceStatus, string> = {
@@ -52,6 +53,7 @@ export function AdminDashboardPage() {
   const navigate = useNavigate()
   const today = new Date()
   const { data: stats } = useAdminDashboardStats(today)
+  const { data: company } = useCurrentCompany()
   const { data: recentInvoices = [] } = useRecentInvoices(6)
   const { data: pendingNumberRequests = [] } =
     useInvoiceNumberChangeRequests('pending')
@@ -68,7 +70,7 @@ export function AdminDashboardPage() {
   return (
     <AppShell
       title="Resumen del mes"
-      subtitle={`${capitalize(monthLabel)} · Informage Studios`}
+      subtitle={`${capitalize(monthLabel)} · ${company?.name ?? ''}`}
       breadcrumbs={[{ label: 'Dashboard' }]}
       rightAction={
         <Button

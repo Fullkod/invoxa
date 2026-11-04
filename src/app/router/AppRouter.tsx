@@ -16,6 +16,22 @@ const ForgotPasswordPage = lazy(() =>
   import('../../features/auth/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })),
 )
 
+const CompaniesListPage = lazy(() =>
+  import('../../features/super/companies/CompaniesListPage').then((m) => ({
+    default: m.CompaniesListPage,
+  })),
+)
+const NewCompanyPage = lazy(() =>
+  import('../../features/super/companies/NewCompanyPage').then((m) => ({
+    default: m.NewCompanyPage,
+  })),
+)
+const CompanyDetailPage = lazy(() =>
+  import('../../features/super/companies/CompanyDetailPage').then((m) => ({
+    default: m.CompanyDetailPage,
+  })),
+)
+
 const AdminDashboardPage = lazy(() =>
   import('../../features/admin/dashboard/AdminDashboardPage').then((m) => ({
     default: m.AdminDashboardPage,
@@ -136,6 +152,14 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
       <RoleRoute role="admin">{children}</RoleRoute>
+    </ProtectedRoute>
+  )
+}
+
+function SuperAdminRoute({ children }: { children: React.ReactNode }) {
+  return (
+    <ProtectedRoute>
+      <RoleRoute role="super_admin">{children}</RoleRoute>
     </ProtectedRoute>
   )
 }
@@ -283,6 +307,32 @@ export function AppRouter() {
               <AdminRoute>
                 <NotificationsPage />
               </AdminRoute>
+            }
+          />
+
+          {/* Super admin area */}
+          <Route
+            path="/super/companies"
+            element={
+              <SuperAdminRoute>
+                <CompaniesListPage />
+              </SuperAdminRoute>
+            }
+          />
+          <Route
+            path="/super/companies/new"
+            element={
+              <SuperAdminRoute>
+                <NewCompanyPage />
+              </SuperAdminRoute>
+            }
+          />
+          <Route
+            path="/super/companies/:id"
+            element={
+              <SuperAdminRoute>
+                <CompanyDetailPage />
+              </SuperAdminRoute>
             }
           />
 

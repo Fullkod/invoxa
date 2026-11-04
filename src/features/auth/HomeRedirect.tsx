@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Navigate } from 'react-router-dom'
 import { RouteFallback } from '../../components/ui/RouteFallback'
 import { isNative } from '../../lib/native/platform'
+import { homePathFor } from './roles'
 import { useAuth } from './useAuth'
 import { useProfile } from './useProfile'
 
@@ -44,6 +45,5 @@ export function HomeRedirect() {
     )
   }
 
-  const target = profile.role === 'admin' ? '/admin/dashboard' : '/app/dashboard'
-  return <Navigate to={target} replace />
+  return <Navigate to={homePathFor(profile)} replace />
 }
