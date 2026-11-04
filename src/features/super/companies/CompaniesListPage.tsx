@@ -58,7 +58,8 @@ export function CompaniesListPage() {
                   <button
                     type="button"
                     onClick={() => navigate(`/super/companies/${c.id}`)}
-                    className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                    // Mobile: full row for the name, status and actions wrap below.
+                    className="flex min-w-0 flex-1 basis-full items-center gap-3 text-left sm:basis-auto"
                   >
                     <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       <Building2 size={16} />

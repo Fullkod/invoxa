@@ -12,6 +12,8 @@ export function useUsers() {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
+        // RLS lets everyone read their own row: hide the super admin.
+        .neq('role', 'super_admin')
         .order('created_at', { ascending: false })
       if (error) throw error
       return (data ?? []) as Profile[]

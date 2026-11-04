@@ -1,0 +1,53 @@
+{
+  "results": [
+    {
+      "name": "companies-list",
+      "ok": true,
+      "detail": "Lista con Informage (prefijo INF); sidebar con Empresas",
+      "shot": "screenshots/01-companies-list.png"
+    },
+    {
+      "name": "company-detail",
+      "ok": true,
+      "detail": "NIF B-97776744; prefijo bloqueado",
+      "shot": "screenshots/02-company-detail.png"
+    },
+    {
+      "name": "new-company-validation",
+      "ok": true,
+      "detail": "Formulario vacío y prefijo inválido muestran errores (no se envía nada)",
+      "shot": "screenshots/03-new-company-validation.png"
+    },
+    {
+      "name": "enter-company",
+      "ok": true,
+      "detail": "Dashboard de Informage; sidebar con Empresas + secciones de admin",
+      "shot": "screenshots/04-enter-company.png"
+    },
+    {
+      "name": "admin-users",
+      "ok": true,
+      "detail": "Usuarios de Informage visibles; el super admin no aparece",
+      "shot": "screenshots/05-admin-users.png"
+    },
+    {
+      "name": "admin-projects",
+      "ok": true,
+      "detail": "2 proyectos",
+      "shot": "screenshots/06-admin-projects.png"
+    },
+    {
+      "name": "admin-invoices",
+      "ok": true,
+      "detail": "Facturas de Informage visibles",
+      "shot": "screenshots/07-admin-invoices.png"
+    },
+    {
+      "name": "mobile-companies",
+      "ok": true,
+      "detail": "Móvil 390px sin scroll horizontal",
+      "shot": "screenshots/08-mobile-companies.png"
+    }
+  ],
+  "consoleErrors": []
+}

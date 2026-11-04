@@ -128,6 +128,7 @@ export function useAvailableUsers(projectId: string | undefined) {
         .from('profiles')
         .select('*')
         .neq('status', 'inactive')
+        .neq('role', 'super_admin')
         .order('full_name', { nullsFirst: false })
 
       if (pErr) throw pErr

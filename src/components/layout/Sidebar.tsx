@@ -218,8 +218,8 @@ export function Sidebar({
               <div className="truncate text-xs font-semibold text-text">
                 {profile.full_name || profile.email}
               </div>
-              <div className="text-[10px] capitalize text-muted">
-                {profile.role}
+              <div className="text-[10px] text-muted">
+                {roleLabel(profile.role)}
               </div>
             </div>
             <SettingsMenu profile={profile} onNavigate={onNavigate} />
