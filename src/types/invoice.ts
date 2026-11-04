@@ -47,6 +47,7 @@ export type Invoice = {
   user_id: string
   invoice_number: string
   user_invoice_sequence: number
+  invoice_year: number
   invoice_date: string
   period_start: string
   period_end: string

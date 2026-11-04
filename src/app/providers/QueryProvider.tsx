@@ -1,22 +1,7 @@
-import { QueryClient } from '@tanstack/react-query'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import type { ReactNode } from 'react'
-
-const ONE_DAY = 1000 * 60 * 60 * 24
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      // gcTime must be ≥ maxAge below or persisted entries get evicted before
-      // the persister rehydrates them.
-      gcTime: ONE_DAY,
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
-})
+import { ONE_DAY, queryClient } from './queryClient'
 
 const persister = createSyncStoragePersister({
   storage: typeof window !== 'undefined' ? window.localStorage : undefined,

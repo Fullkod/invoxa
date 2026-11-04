@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase/client'
 import type { Profile } from '../../types/profile'
-import { useAuth } from './AuthProvider'
+import { useAuth } from './useAuth'
 
 export function useProfile() {
   const { session } = useAuth()

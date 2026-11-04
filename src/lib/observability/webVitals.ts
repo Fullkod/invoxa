@@ -24,7 +24,6 @@ export function reportWebVitals(
 function defaultDispatch(metric: Metric): void {
   if (!LOG_TO_CONSOLE) return
   // Group by name and rating for at-a-glance scanning in DevTools.
-  // eslint-disable-next-line no-console
   console.info(
     `[web-vitals] ${metric.name} ${metric.value.toFixed(1)} (${metric.rating})`,
     metric,

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase/client'
 import type { AppNotification } from '../../types/notification'
-import { useAuth } from '../auth/AuthProvider'
+import { useAuth } from '../auth/useAuth'
 
 const NOTIFICATIONS_KEY = (userId: string | undefined) =>
   ['notifications', userId] as const

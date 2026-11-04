@@ -13,17 +13,17 @@ Fuente: lectura de `supabase/migrations/` (sobre todo `20260506000007_fix_genera
   sección, memoización/virtualización (medir antes) y Lighthouse CI.
 
 ## Huecos de lógica encontrados en el código
-1. **Cancelar no libera tareas:** `tasks.invoice_id` sigue apuntando a la factura cancelada, así que al
+1. ~~**Cancelar no libera tareas**~~ (resuelto 2026-11-04, migración `20261104000000`): `tasks.invoice_id` sigue apuntando a la factura cancelada, así que al
    regenerar el periodo esas horas no entran. Nada pone `invoice_id = null`.
 2. **Rechazada sin corrección:** `rejected → generated` es posible, pero no se pueden editar líneas;
    la única salida es cancelar (y choca con el punto 1).
 3. **Usa lo vigente hoy, no lo del periodo:** `generate_user_invoice` filtra por `is_current` y tarifa
    activa, no por `start_date/end_date` del periodo.
 4. **Tarifa fija sin prorrateo:** siempre el mes completo.
-5. **Secuencia no anual:** `next_invoice_number` toma `max(user_invoice_sequence)` de todas las facturas
+5. ~~**Secuencia no anual**~~ (resuelto 2026-11-04: se reinicia por año, `invoices.invoice_year`): `next_invoice_number` toma `max(user_invoice_sequence)` de todas las facturas
    del usuario; el año del número cambia pero el contador no se reinicia.
 6. **`expired`** en `invoice_requests`: nada lo asigna (no hay cron).
 7. **Monedas:** una factura por usuario y periodo + una sola moneda ⇒ un usuario con proyectos en dos
    monedas no puede facturar.
-8. **Lint:** `npm run lint` da 8 errores y 4 avisos en `src/` y `supabase/functions/` (2026-11-04).
+8. ~~**Lint:**~~ (resuelto 2026-11-04: 0 errores, 3 avisos intencionados) `npm run lint` da 8 errores y 4 avisos en `src/` y `supabase/functions/` (2026-11-04).
    `npm run build` pasa.

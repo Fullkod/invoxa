@@ -1,7 +1,7 @@
 import { endOfMonth, format, startOfMonth } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { AlertTriangle, ArrowLeft, FileText, Send } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AppShell } from '../../../components/layout/AppShell'
 import { Button } from '../../../components/ui/Button'
@@ -35,15 +35,12 @@ export function NewInvoicePage() {
   const { data: billingProfile } = useMyBillingProfile()
   const generate = useGenerateInvoice()
 
-  // Pre-fill notes with the user's default invoice notes the first time the
-  // profile loads. Don't overwrite once the user has typed.
-  useEffect(() => {
-    if (notesTouched) return
-    const def = billingProfile?.default_invoice_notes
-    if (def && def.trim().length > 0) {
-      setNotes(def)
-    }
-  }, [billingProfile, notesTouched])
+  // Pre-fill notes with the user's default invoice notes until the user types.
+  const defaultNotes = billingProfile?.default_invoice_notes
+  const notesValue =
+    !notesTouched && defaultNotes && defaultNotes.trim().length > 0
+      ? defaultNotes
+      : notes
 
   const handleGenerate = async () => {
     setServerError(null)
@@ -51,7 +48,7 @@ export function NewInvoicePage() {
       const result = await generate.mutateAsync({
         periodStart,
         periodEnd,
-        notes: notes.trim() ? notes.trim() : null,
+        notes: notesValue.trim() ? notesValue.trim() : null,
       })
       navigate(`/app/invoices/${result.invoice_id}`, { replace: true })
     } catch (err) {
@@ -212,7 +209,7 @@ export function NewInvoicePage() {
               />
               <CardBody>
                 <Textarea
-                  value={notes}
+                  value={notesValue}
                   onChange={(e) => {
                     setNotes(e.target.value)
                     setNotesTouched(true)

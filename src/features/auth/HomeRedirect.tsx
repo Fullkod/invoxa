@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Navigate } from 'react-router-dom'
 import { RouteFallback } from '../../components/ui/RouteFallback'
 import { isNative } from '../../lib/native/platform'
-import { useAuth } from './AuthProvider'
+import { useAuth } from './useAuth'
 import { useProfile } from './useProfile'
 
 // Lazy import keeps the 1200+ line marketing landing out of the main bundle.

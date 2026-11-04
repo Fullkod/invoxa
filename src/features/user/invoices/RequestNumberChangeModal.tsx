@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../../../components/ui/Button'
 import { Field } from '../../../components/ui/Field'
 import { Textarea } from '../../../components/ui/Textarea'
@@ -23,15 +23,18 @@ export function RequestNumberChangeModal({
 
   const requestChange = useRequestInvoiceNumberChange()
 
-  // Reset state on open.
-  useEffect(() => {
+  // Reset state on open (adjusted during render, not in an effect).
+  const resetKey = open ? currentNumber : null
+  const [lastResetKey, setLastResetKey] = useState(resetKey)
+  if (resetKey !== lastResetKey) {
+    setLastResetKey(resetKey)
     if (open) {
       setRequestedNumber(currentNumber)
       setReason('')
       setError(null)
       setSubmitted(false)
     }
-  }, [open, currentNumber])
+  }
 
   if (!open) return null
 

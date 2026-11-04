@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { isNative } from '../../lib/native/platform'
 import { supabase } from '../../lib/supabase/client'
 import type { AppNotification } from '../../types/notification'
-import { useAuth } from '../auth/AuthProvider'
+import { useAuth } from '../auth/useAuth'
 
 /**
  * Suscribe el cliente al canal de Realtime de la tabla `notifications`

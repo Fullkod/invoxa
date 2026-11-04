@@ -3,7 +3,6 @@ import {
   Files,
   FolderKanban,
   Home,
-  Send,
   UserSquare,
   Users,
 } from 'lucide-react'
@@ -109,21 +108,3 @@ export function MobileBottomNav({ profile }: { profile: Profile }) {
     </nav>
   )
 }
-
-const adminMore = [
-  {
-    to: '/admin/invoice-requests',
-    label: 'Solicitudes de factura',
-    icon: <Send size={18} />,
-  },
-]
-
-const userMore = [
-  {
-    to: '/app/invoice-number-requests',
-    label: 'Cambios de consecutivo',
-    icon: <FileText size={18} />,
-  },
-]
-
-export const mobileMoreLinks = { admin: adminMore, user: userMore }

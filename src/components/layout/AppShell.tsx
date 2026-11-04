@@ -34,10 +34,12 @@ export function AppShell({
   const location = useLocation()
   useNotificationsRealtime()
 
-  // Close drawer when route changes.
-  useEffect(() => {
+  // Close drawer when route changes (adjusted during render, not in an effect).
+  const [drawerPath, setDrawerPath] = useState(location.pathname)
+  if (drawerPath !== location.pathname) {
+    setDrawerPath(location.pathname)
     setDrawerOpen(false)
-  }, [location.pathname])
+  }
 
   // Persist desktop sidebar collapsed state.
   useEffect(() => {

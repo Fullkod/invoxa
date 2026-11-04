@@ -17,7 +17,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import logoHorizontal from '/brand/imagotipo-horizontal-cafe.svg'
 import isotipoCafe from '/brand/isotipo-cafe.svg'
-import { useAuth } from '../../features/auth/AuthProvider'
+import { useAuth } from '../../features/auth/useAuth'
 import type { Profile, UserRole } from '../../types/profile'
 
 type NavItem = {

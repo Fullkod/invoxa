@@ -1,7 +1,7 @@
 import { App } from '@capacitor/app'
 import { SplashScreen } from '@capacitor/splash-screen'
 import { StatusBar, Style } from '@capacitor/status-bar'
-import { queryClient } from '../../app/providers/QueryProvider'
+import { queryClient } from '../../app/providers/queryClient'
 import { isNative } from './platform'
 
 // Query keys whose data is time-sensitive enough to refresh whenever the user

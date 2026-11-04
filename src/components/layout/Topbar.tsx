@@ -2,7 +2,7 @@ import { LogOut, Menu, Search } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import isotipoCafe from '/brand/isotipo-cafe.svg'
-import { useAuth } from '../../features/auth/AuthProvider'
+import { useAuth } from '../../features/auth/useAuth'
 import { useProfile } from '../../features/auth/useProfile'
 import { NotificationsBell } from '../../features/notifications/NotificationsBell'
 

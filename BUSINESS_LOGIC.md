@@ -109,8 +109,8 @@ el usuario o el admin pulsan "Generar PDF" en el detalle de la factura.
 - Formato: `INF-{USER_CODE}-{AÑO}-{NNNN}`, p. ej. `INF-RCA-2026-0001`. Sin `user_code` se usan los 6 primeros
   caracteres del UUID del usuario.
 - La secuencia es **por usuario** y la calcula el backend con un bloqueo por usuario (sin carreras).
-- El año sale del inicio del periodo, pero **la secuencia no se reinicia cada año**: sigue contando sobre
-  todas las facturas del usuario (2026-0007 → 2027-0008).
+- El año sale del inicio del periodo (`invoices.invoice_year`) y **la secuencia se reinicia cada año**
+  (2026-0007 → 2027-0001). Única por usuario, año y secuencia. *(Desde 2026-11-04, PRP-001 fase 0.)*
 - El número es único en todo el sistema.
 
 ### 8. Cambio de consecutivo
@@ -136,7 +136,8 @@ Camino normal: `generated` → (`sent` / `reviewed`) → `approved` → `paid`.
 | `paid`, `cancelled` | — (finales) |
 
 Lo valida un trigger en la base de datos; solo el admin cambia estados. Cada cambio avisa al colaborador.
-Una factura cancelada libera el periodo (se puede generar otra).
+Una factura cancelada libera el periodo (se puede generar otra) y **sus tareas** (`invoice_id = null`,
+trigger `invoices_release_tasks_on_cancel`), que vuelven a entrar al regenerar. Conserva su número.
 
 ### 10. PDF de factura
 
@@ -180,13 +181,12 @@ facturación, asignaciones, tarifas, tareas y solicitudes recibidas.
 
 - **Correo:** las funciones solo insertan en `email_logs` con `pending`; no hay `send-email` ni proveedor.
   Plan en `docs/pending/email-integration.md` (Resend). `invoice_generated` ni siquiera se registra.
-- **Cancelar una factura no libera sus tareas:** siguen con `invoice_id` de la cancelada, así que al
-  regenerar el periodo esas horas ya no se facturan.
+- ~~Cancelar una factura no libera sus tareas~~ — resuelto 2026-11-04 (PRP-001 fase 0).
 - **Factura rechazada:** puede volver a `generated`, pero no hay forma de corregir sus líneas; la vía es
-  cancelar (con el problema anterior).
+  cancelar y regenerar.
 - **Periodo vs. asignaciones:** la generación usa los proyectos y tarifas **vigentes hoy**, no los del periodo;
   facturar un mes pasado tras cambiar tarifas o terminar una asignación da otro resultado.
 - **Tarifa fija:** se cobra el mes completo aunque la asignación empezara o terminara a mitad de mes.
 - **`expired`** existe en solicitudes y en la UI, pero nada pone una solicitud en ese estado.
-- **Secuencia anual:** no se reinicia por año (ver Consecutivo); confirmar si es lo deseado.
+- ~~Secuencia anual~~ — se reinicia cada año desde 2026-11-04 (PRP-001 fase 0).
 - **Impuestos:** siempre 0.

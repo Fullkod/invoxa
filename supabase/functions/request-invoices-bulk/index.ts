@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
   }
 
   // Resolve target users.
-  let targetIds: string[] = []
+  let targetIds: string[]
   if (user_ids && user_ids.length > 0) {
     targetIds = user_ids
   } else {
