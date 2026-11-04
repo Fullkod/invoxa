@@ -178,6 +178,15 @@ actualización de `BUSINESS_LOGIC.md` y la memoria.
   `profiles.company_id` siguen nullable (CHECK de super admin en Fase 2).
 - Informage: id fijo `5b1c2e0a-7d43-4f8e-9a61-3c0f5e2d9b17`, prefijo `INF`.
 
+### 2026-11-04: Fase 2 — `using`/`with check` necesitan paréntesis
+- **Error**: `db push` falló con `syntax error at or near "is_company_admin"`: al regenerar políticas desde
+  `pg_policies`, `qual` sin paréntesis (`using is_company_admin(...)`) no es SQL válido.
+- **Fix**: siempre `using (<expr>)` / `with check (<expr>)`. La migración va en una transacción: no quedó nada a medias.
+- **Decisión**: Storage NO se movió a `{company_id}/...`; la política de admin resuelve la empresa por el
+  perfil dueño de la carpeta (`{user_id}`). Sin migrar archivos ni `pdf_url`.
+- **Prueba de aislamiento** reutilizable: `supabase/tests/company_isolation_test.sql` (todo en una
+  transacción revertida). Correrla tras cada cambio de RLS.
+
 ---
 
 ## Gotchas
