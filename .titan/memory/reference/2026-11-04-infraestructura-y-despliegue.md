@@ -22,3 +22,9 @@ Fuente: `vercel.json`, `capacitor.config.ts`, `.github/workflows/`, `supabase/`,
   terracota, Fraunces/Geist. Plantilla original de factura: `docs/empty.docx`.
 - **Brief original:** `docs/instructions.md` (requisitos; algunas partes superadas por el código, ver
   `BUSINESS_LOGIC.md`).
+- **Acceso a Supabase (desde 2026-11-04):** cuenta de Claudia, token `SUPABASE_ACCESS_TOKEN` en `.env.local`
+  (no en git). Proyecto `prabpfidllznbtthmkxz`, ya enlazado. CLI desde PowerShell en la raíz (la función del
+  perfil lee `.env.local`); en Git Bash hay que exportar la variable a mano. MCP: `.mcp.json` →
+  `scripts/supabase-mcp.mjs`. Roberto pidió trabajar **directamente sobre producción** (sin Supabase local).
+- **Historial de migraciones:** `20260529000000` y `20260619000000` se habían aplicado a mano; se marcaron
+  con `supabase migration repair --status applied` el 2026-11-04. Antes de `db push`, mirar `migration list`.
