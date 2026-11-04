@@ -1,0 +1,18 @@
+{
+  "name": "titan-factory-codex",
+  "version": "0.1.0",
+  "description": "Reusable Codex workflows for Next.js, Supabase, Vercel, EasyPanel, n8n and project memory.",
+  "author": {
+    "name": "Local project owner"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Titan Factory Codex",
+    "shortDescription": "29 skills and 7 roles for reusable project workflows.",
+    "longDescription": "Adapted Titan Factory toolbox with project-local memory, preserved domain recipes and safe portable lifecycle helpers. Preferred stack: Next.js, Supabase and Vercel. EasyPanel remains available.",
+    "developerName": "Local project owner",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use Titan Factory Codex to inspect this project and choose the relevant workflow."
+  }
+}

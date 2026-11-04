@@ -1,0 +1,180 @@
+{
+  "upstream_commit": "456562bd5bbe82ed86c4bbc8c5c23d6dbbe118e8",
+  "upstream_repository": "https://github.com/tony-sanchez-ia/titan-factory",
+  "skills": [
+    {
+      "source": "add-emails",
+      "skill": "tf-add-emails",
+      "upstream_sha256": "f1978ca87cd63bf16f929ec4995a24b7d1336e07308afdbb9e295752f70275a9",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "add-login",
+      "skill": "tf-add-login",
+      "upstream_sha256": "a222d2aa20aae20833f42645b45f597a2c2a2b05c23ab05730cf3906392275bb",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "add-manual",
+      "skill": "tf-add-manual",
+      "upstream_sha256": "4cba6d40de1b23dace4b44a9b7d8b648c25c2224bbd97315efb19c87b152436b",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "add-mobile",
+      "skill": "tf-add-mobile",
+      "upstream_sha256": "69e4e72212e1cc987d009fde5d26b312c7d21ac1ad27a72eb3b95aea5496af55",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "add-payments",
+      "skill": "tf-add-payments",
+      "upstream_sha256": "27e3f156ba942d68abdecd93b5f0d37ea8f7a4b63d523ee588add00318ef4bad",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "ai",
+      "skill": "tf-ai",
+      "upstream_sha256": "dd6ff1beec2106f33c9e0d66e6b183ee1073ad8d286aab360cdcf7ed0a86449d",
+      "mode": "rewritten"
+    },
+    {
+      "source": "autoresearch",
+      "skill": "tf-autoresearch",
+      "upstream_sha256": "c22f1c2b5bc690e8a5fa38519a125a091b5f5d9475314e0217329c20a054a080",
+      "mode": "rewritten"
+    },
+    {
+      "source": "bucle-agentico",
+      "skill": "tf-bucle-agentico",
+      "upstream_sha256": "fa3297e26683a7553ff55e05f19c20b94957ca0ab811da5eaf863a9e72af4610",
+      "mode": "rewritten"
+    },
+    {
+      "source": "easypanel-deploy",
+      "skill": "tf-easypanel-deploy",
+      "upstream_sha256": "4480e852332ba9f742dd1c2d67bcb45bf7eee7d0a9f91b2c8aed21e44b6a3ca5",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "eject-tf",
+      "skill": "tf-eject-tf",
+      "upstream_sha256": "832f203ca5fbfa0dd99077ce9d05842aaf0e55c977500df9d454e1c9a89ad7e7",
+      "mode": "rewritten"
+    },
+    {
+      "source": "image-generation",
+      "skill": "tf-image-generation",
+      "upstream_sha256": "0a3ce8855b931bfa279df192a9de6ac7665270c44f517cb7425ca67da650026f",
+      "mode": "rewritten"
+    },
+    {
+      "source": "memory-manager",
+      "skill": "tf-memory-manager",
+      "upstream_sha256": "b2f443089c53d20ec32758bf52967128caf6dc6d46ab0361578b7d913859463d",
+      "mode": "rewritten"
+    },
+    {
+      "source": "n8n-code-javascript",
+      "skill": "tf-n8n-code-javascript",
+      "upstream_sha256": "a0c5d95ff87150e26559c2b4f7d4aa044f59952e10ddfb7649a41a36fc9f6317",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "n8n-code-python",
+      "skill": "tf-n8n-code-python",
+      "upstream_sha256": "698e860df32c6dd621996de0c77355c0efa00bcaa6fadafa183697164a1ca431",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "n8n-expression-syntax",
+      "skill": "tf-n8n-expression-syntax",
+      "upstream_sha256": "a3ad181c4f7572667234a560f024bc9ecb60a8f9fe775c4f8023d8d4fb4456df",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "n8n-mcp-tools-expert",
+      "skill": "tf-n8n-mcp-tools-expert",
+      "upstream_sha256": "929a7462c495f6e87f1ecf7b3c766b5e9b1880d7afdcab7117a02cac5c53c14c",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "n8n-node-configuration",
+      "skill": "tf-n8n-node-configuration",
+      "upstream_sha256": "b733dace2f48f193a11b6a10dac2eb582665ac4a94e7a0a5cee2d7d871b52e5f",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "n8n-validation-expert",
+      "skill": "tf-n8n-validation-expert",
+      "upstream_sha256": "66641082490f60e28839424bceda030516cd2fc402bab3a3ba439751edee0fde",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "n8n-workflow-patterns",
+      "skill": "tf-n8n-workflow-patterns",
+      "upstream_sha256": "37f269f26a07d81c3d67f8269bd50271c24c95746fd7aaf5438f615c0d9ae2bc",
+      "mode": "adapted-with-domain-reference"
+    },
+    {
+      "source": "new-app",
+      "skill": "tf-new-app",
+      "upstream_sha256": "8e95b4f370b55370d111ec283981a5ce84cd9f847adcb25d7cfc9ba6e4ef4d3c",
+      "mode": "rewritten"
+    },
+    {
+      "source": "playwright-cli",
+      "skill": "tf-playwright-cli",
+      "upstream_sha256": "882fc816e2f8725110c1f5a464d476110b7b44b2ac3580bea11f62e606c0fb32",
+      "mode": "rewritten"
+    },
+    {
+      "source": "primer",
+      "skill": "tf-primer",
+      "upstream_sha256": "299b21f837ccdcc00a017956ebcc934198829b3e13f08b365848be0d1bf57765",
+      "mode": "rewritten"
+    },
+    {
+      "source": "prp",
+      "skill": "tf-prp",
+      "upstream_sha256": "35d50b88091ed44aee3ca3baac3cfcd1c996f2a96018ce155f1ae242f7fa1db5",
+      "mode": "rewritten"
+    },
+    {
+      "source": "skill-creator",
+      "skill": "tf-skill-creator",
+      "upstream_sha256": "97a6ee8c61ab939fd6959b1d40c14cd8120e8792e7dc0b5176686697155260f9",
+      "mode": "rewritten"
+    },
+    {
+      "source": "supabase",
+      "skill": "tf-supabase",
+      "upstream_sha256": "5fadcd3a58568cafeba9a08800e3467bbf56a721440feff41135399f5a55d08b",
+      "mode": "rewritten"
+    },
+    {
+      "source": "tasknic",
+      "skill": "tf-tasknic",
+      "upstream_sha256": "b2a748bf225613cd2fe0af7af13b57a060136b6236ac2182d34022e1b1060816",
+      "mode": "rewritten"
+    },
+    {
+      "source": "update-tf",
+      "skill": "tf-update-tf",
+      "upstream_sha256": "cfe016a485e7fae5f5bc43ddbb1681d165b9c23b73bcf1986ffba830a4258bdc",
+      "mode": "rewritten"
+    },
+    {
+      "source": "video-visuals",
+      "skill": "tf-video-visuals",
+      "upstream_sha256": "3c196a89181f897a25811040712b01bb8ee90e182f7fd076e0a3a1ce44bf7bc4",
+      "mode": "rewritten"
+    },
+    {
+      "source": "website-3d",
+      "skill": "tf-website-3d",
+      "upstream_sha256": "de70a91870b5193f07154f8ae7508796813a39a70d0436ad7a74b1b387ecc5ea",
+      "mode": "adapted-with-domain-reference"
+    }
+  ]
+}

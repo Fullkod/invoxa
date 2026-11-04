@@ -1,0 +1,20 @@
+{
+  "name": "invoxa",
+  "interface": {
+    "displayName": "Invoxa"
+  },
+  "plugins": [
+    {
+      "name": "titan-factory-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/titan-factory-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

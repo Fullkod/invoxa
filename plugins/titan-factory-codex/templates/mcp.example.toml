@@ -1,0 +1,31 @@
+# Reference only. Not installed or loaded by the plugin.
+# Validate server versions before enabling. On Windows use npx.cmd if needed by the host.
+
+[mcp_servers.titan_supabase]
+url = "https://mcp.supabase.com/mcp?project_ref=YOUR_PROJECT_REF&read_only=true"
+enabled = false
+
+[mcp_servers.titan_playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp"]
+enabled = false
+
+[mcp_servers.titan_chrome_devtools]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp"]
+enabled = false
+
+[mcp_servers.titan_next_devtools]
+command = "npx"
+args = ["-y", "next-devtools-mcp"]
+enabled = false
+
+[mcp_servers.titan_n8n]
+command = "docker"
+args = ["run", "-i", "--rm", "-e", "MCP_MODE=stdio", "-e", "LOG_LEVEL=error", "-e", "DISABLE_CONSOLE_OUTPUT=true", "-e", "N8N_API_URL", "-e", "N8N_API_KEY", "ghcr.io/czlonkowski/n8n-mcp:latest"]
+env_vars = ["N8N_API_URL", "N8N_API_KEY"]
+enabled = false
+
+# Optional Brave, Firecrawl, Firebase, Sequential Thinking and Google Workspace
+# remain in docs/integrations.md. Select and verify their actual current server
+# rather than installing unverified source package names automatically.

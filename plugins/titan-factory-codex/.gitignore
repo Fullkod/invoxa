@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+.verification/
+node_modules/
+.next/
+*.tsbuildinfo
+dist/
+.env
+.env.local
+.titan-toolkit-backups/
+.titan-toolkit-lock
