@@ -11,6 +11,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller } from '../_shared/company.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -66,13 +67,8 @@ Deno.serve(async (req) => {
     auth: { persistSession: false },
   })
 
-  const { data: callerProfile } = await adminClient
-    .from('profiles')
-    .select('role')
-    .eq('id', userResult.user.id)
-    .single()
-
-  if (!callerProfile || callerProfile.role !== 'admin') {
+  const caller = await loadCaller(adminClient, userResult.user.id)
+  if (!caller || !caller.isAdmin) {
     return jsonResponse(
       { error: 'Forbidden — solo el admin puede resolver solicitudes' },
       403,
@@ -106,7 +102,7 @@ Deno.serve(async (req) => {
     .eq('id', request_id)
     .single()
 
-  if (requestErr || !request) {
+  if (requestErr || !request || request.company_id !== caller.companyId) {
     return jsonResponse({ error: 'Solicitud no encontrada' }, 404)
   }
 
@@ -135,6 +131,7 @@ Deno.serve(async (req) => {
     }
 
     await adminClient.from('email_logs').insert({
+      company_id: caller.companyId,
       recipient_email: 'user-pending', // resolved server-side later
       subject: `Solicitud rechazada · ${request.current_invoice_number}`,
       type: 'invoice_number_change_resolved',
@@ -179,6 +176,7 @@ Deno.serve(async (req) => {
   }
 
   await adminClient.from('email_logs').insert({
+    company_id: caller.companyId,
     recipient_email: 'user-pending',
     subject: `Cambio aplicado · ${request.requested_invoice_number}`,
     type: 'invoice_number_change_resolved',

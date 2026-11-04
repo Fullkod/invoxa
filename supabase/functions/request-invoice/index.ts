@@ -10,6 +10,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller } from '../_shared/company.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -66,13 +67,8 @@ Deno.serve(async (req) => {
     auth: { persistSession: false },
   })
 
-  const { data: callerProfile } = await adminClient
-    .from('profiles')
-    .select('role')
-    .eq('id', userResult.user.id)
-    .single()
-
-  if (!callerProfile || callerProfile.role !== 'admin') {
+  const caller = await loadCaller(adminClient, userResult.user.id)
+  if (!caller || !caller.isAdmin) {
     return jsonResponse(
       { error: 'Forbidden — solo el admin puede solicitar facturas' },
       403,
@@ -103,11 +99,11 @@ Deno.serve(async (req) => {
   // Resolve target user — must exist and be active.
   const { data: targetUser, error: targetErr } = await adminClient
     .from('profiles')
-    .select('id, full_name, email, status')
+    .select('id, full_name, email, status, company_id')
     .eq('id', user_id)
     .single()
 
-  if (targetErr || !targetUser) {
+  if (targetErr || !targetUser || targetUser.company_id !== caller.companyId) {
     return jsonResponse({ error: 'Usuario no encontrado' }, 404)
   }
 
@@ -179,6 +175,7 @@ Deno.serve(async (req) => {
   // Email log — actual SMTP/provider integration is a TODO; logging here
   // makes the request observable from the admin panel.
   await adminClient.from('email_logs').insert({
+    company_id: caller.companyId,
     recipient_email: targetUser.email,
     subject: `Recordatorio: factura del periodo ${period_start} → ${period_end}`,
     type: 'invoice_request',

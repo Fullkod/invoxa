@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller, userInCompany } from '../_shared/company.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -83,13 +84,12 @@ Deno.serve(async (req) => {
 
   let targetUserId = userResult.user.id
   if (payload.user_id && payload.user_id !== targetUserId) {
-    const { data: callerProfile } = await adminClient
-      .from('profiles')
-      .select('role')
-      .eq('id', userResult.user.id)
-      .single()
-
-    if (!callerProfile || callerProfile.role !== 'admin') {
+    const caller = await loadCaller(adminClient, userResult.user.id)
+    if (
+      !caller ||
+      !caller.isAdmin ||
+      !(await userInCompany(adminClient, payload.user_id, caller.companyId))
+    ) {
       return jsonResponse(
         { error: 'Forbidden — solo el admin puede generar facturas a otros usuarios' },
         403,

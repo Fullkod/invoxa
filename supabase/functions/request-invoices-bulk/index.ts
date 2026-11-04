@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller } from '../_shared/company.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -84,13 +85,8 @@ Deno.serve(async (req) => {
     auth: { persistSession: false },
   })
 
-  const { data: callerProfile } = await adminClient
-    .from('profiles')
-    .select('role')
-    .eq('id', userResult.user.id)
-    .single()
-
-  if (!callerProfile || callerProfile.role !== 'admin') {
+  const caller = await loadCaller(adminClient, userResult.user.id)
+  if (!caller || !caller.isAdmin) {
     return jsonResponse(
       { error: 'Forbidden — solo el admin puede solicitar facturas' },
       403,
@@ -127,6 +123,7 @@ Deno.serve(async (req) => {
     const { data: assignments } = await adminClient
       .from('user_project_assignments')
       .select('user_id')
+      .eq('company_id', caller.companyId)
       .eq('is_current', true)
 
     const assignedIds = Array.from(
@@ -148,6 +145,7 @@ Deno.serve(async (req) => {
     const { data: activeProfiles } = await adminClient
       .from('profiles')
       .select('id')
+      .eq('company_id', caller.companyId)
       .eq('status', 'active')
       .in('id', assignedIds)
 
@@ -168,6 +166,7 @@ Deno.serve(async (req) => {
   const { data: profiles } = await adminClient
     .from('profiles')
     .select('id, email, status')
+    .eq('company_id', caller.companyId)
     .in('id', targetIds)
 
   const profileById = new Map(
@@ -220,6 +219,7 @@ Deno.serve(async (req) => {
   }[] = []
   const refreshIds: string[] = []
   const emailRows: {
+    company_id: string | null
     recipient_email: string
     subject: string
     type: 'invoice_request'
@@ -252,6 +252,7 @@ Deno.serve(async (req) => {
       refreshIds.push(pendingId)
       outcome.refreshed += 1
       emailRows.push({
+        company_id: caller.companyId,
         recipient_email: profile.email,
         subject,
         type: 'invoice_request',
@@ -302,6 +303,7 @@ Deno.serve(async (req) => {
       const profile = profileById.get(row.user_id)
       if (!profile) continue
       emailRows.push({
+        company_id: caller.companyId,
         recipient_email: profile.email,
         subject: `Recordatorio: factura del periodo ${period_start} → ${period_end}`,
         type: 'invoice_request',

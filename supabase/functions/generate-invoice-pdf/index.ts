@@ -7,7 +7,7 @@
 // Layout follows docs/empty.docx:
 //   - Sender block top-left (legal name, tax id, address)
 //   - "FACTURA" + date/number box top-right
-//   - Recipient (Informage Studios) below
+//   - Recipient: the invoice's company (companies table)
 //   - Items table with Cant. / Descripción / P. Unitario / Importe
 //   - TOTAL row
 //   - Observaciones + datos de pago at the bottom
@@ -18,6 +18,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller } from '../_shared/company.ts'
 import {
   PDFDocument,
   PDFFont,
@@ -54,6 +55,7 @@ type InvoiceItem = {
 type InvoiceData = {
   id: string
   user_id: string
+  company_id: string
   invoice_number: string
   invoice_date: string
   period_start: string
@@ -85,6 +87,17 @@ type BillingData = {
   payment_method: string | null
   default_invoice_notes: string | null
 } | null
+
+/** Recipient of the invoice: the company the collaborator bills. */
+type CompanyData = {
+  legal_name: string
+  tax_id: string
+  address_line: string | null
+  postal_code: string | null
+  city: string | null
+  region: string | null
+  country: string
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -143,12 +156,8 @@ Deno.serve(async (req) => {
   // Authorization: caller must own the invoice or be admin
   const callerId = userResult.user.id
   if (invoice.user_id !== callerId) {
-    const { data: callerProfile } = await adminClient
-      .from('profiles')
-      .select('role')
-      .eq('id', callerId)
-      .single()
-    if (!callerProfile || callerProfile.role !== 'admin') {
+    const caller = await loadCaller(adminClient, callerId)
+    if (!caller || !caller.isAdmin || caller.companyId !== invoice.company_id) {
       return jsonResponse({ error: 'Forbidden' }, 403)
     }
   }
@@ -170,6 +179,16 @@ Deno.serve(async (req) => {
     .maybeSingle()
   const billing = billingRaw as BillingData
 
+  const { data: companyRaw } = await adminClient
+    .from('companies')
+    .select('legal_name, tax_id, address_line, postal_code, city, region, country')
+    .eq('id', invoice.company_id)
+    .single()
+  if (!companyRaw) {
+    return jsonResponse({ error: 'Empresa de la factura no encontrada' }, 500)
+  }
+  const company = companyRaw as CompanyData
+
   // Render PDF
   let pdfBytes: Uint8Array
   try {
@@ -177,6 +196,7 @@ Deno.serve(async (req) => {
       sanitizeDeep(invoice),
       sanitizeDeep(profile),
       sanitizeDeep(billing),
+      sanitizeDeep(company),
     )
   } catch (e) {
     return jsonResponse(
@@ -227,6 +247,7 @@ async function renderInvoicePdf(
   invoice: InvoiceData,
   profile: ProfileData,
   billing: BillingData,
+  company: CompanyData,
 ): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.create()
   const page = pdfDoc.addPage([PAGE_W, PAGE_H])
@@ -244,7 +265,7 @@ async function renderInvoicePdf(
   y -= 150
 
   // ─── Recipient block ───
-  y = drawRecipient(page, y, sans, sansBold)
+  y = drawRecipient(page, y, company, sans, sansBold)
 
   y -= 16
 
@@ -465,6 +486,7 @@ function drawInvoiceBox(
 function drawRecipient(
   page: PDFPage,
   startY: number,
+  company: CompanyData,
   sans: PDFFont,
   sansBold: PDFFont,
 ): number {
@@ -478,13 +500,17 @@ function drawRecipient(
     color: COLOR.ink3,
   })
 
+  // Same layout as the original hardcoded Informage block:
+  // legal name / tax id / street / "postal code + city" / "region – country".
+  const cityLine = [company.postal_code, company.city].filter(Boolean).join(' ')
+  const countryLine = [company.region, company.country].filter(Boolean).join(' – ')
   const lines = [
-    'Informage Studios S.L.U.',
-    'B-97776744',
-    'C/Rei En Jaume, 2 – 1ª',
-    '46138 Rafelbunyol',
-    'Valencia – España',
-  ]
+    company.legal_name,
+    company.tax_id,
+    company.address_line,
+    cityLine,
+    countryLine,
+  ].filter((l): l is string => Boolean(l && l.trim()))
 
   const labelGap = 8
   const padTop = 16

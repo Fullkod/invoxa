@@ -187,6 +187,19 @@ actualización de `BUSINESS_LOGIC.md` y la memoria.
 - **Prueba de aislamiento** reutilizable: `supabase/tests/company_isolation_test.sql` (todo en una
   transacción revertida). Correrla tras cada cambio de RLS.
 
+### 2026-11-04: Fase 3 — Edge Functions por empresa
+- `_shared/company.ts` (`loadCaller`, `userInCompany`): toda función que usa service role comprueba que
+  el usuario/factura/solicitud objetivo es de la empresa del llamante (si no, 403/404 "no encontrado").
+- **Decisión**: NO hay `set-active-company`. El super admin cambia `profiles.active_company_id` desde el
+  cliente; la política `profiles_self_update_safe_fields` lo permite y solo surte efecto si es super admin.
+- `create-company` (Zod, solo super admin): crea la empresa + invita a su primer admin; si la invitación
+  falla, borra la empresa.
+- Deploy sin Docker: `supabase functions deploy --use-api` (bundle en el servidor). Smoke test: las 11
+  responden 401 sin sesión.
+- Quitados los fallbacks "si solo hay una empresa" (migración `20261104000004`): una invitación sin
+  `company_id` ahora falla. `email_logs` tolera `company_id` nulo para no romper flujos.
+- **Sin probar con sesión real**: las funciones con JWT de admin/colaborador se prueban en la Fase 5 (navegador).
+
 ---
 
 ## Gotchas

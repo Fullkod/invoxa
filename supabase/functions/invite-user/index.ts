@@ -7,6 +7,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller } from '../_shared/company.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -78,13 +79,8 @@ Deno.serve(async (req) => {
     auth: { persistSession: false },
   })
 
-  const { data: callerProfile, error: profileErr } = await adminClient
-    .from('profiles')
-    .select('role')
-    .eq('id', userResult.user.id)
-    .single()
-
-  if (profileErr || !callerProfile || callerProfile.role !== 'admin') {
+  const caller = await loadCaller(adminClient, userResult.user.id)
+  if (!caller || !caller.isAdmin || !caller.companyId) {
     return jsonResponse({ error: 'Forbidden — admin only' }, 403)
   }
 
@@ -96,6 +92,10 @@ Deno.serve(async (req) => {
   }
 
   const { email, full_name, user_code, role = 'user' } = payload
+
+  if (role !== 'admin' && role !== 'user') {
+    return jsonResponse({ error: 'role must be admin or user' }, 400)
+  }
 
   if (!email || !full_name) {
     return jsonResponse(
@@ -113,6 +113,8 @@ Deno.serve(async (req) => {
         full_name,
         role,
         user_code: user_code ?? '',
+        // New users always join the company of the admin who invites them.
+        company_id: caller.companyId,
       },
       redirectTo: `${appUrl}/accept-invite`,
     })
@@ -183,6 +185,7 @@ Deno.serve(async (req) => {
 
   // Log email send
   await adminClient.from('email_logs').insert({
+    company_id: caller.companyId,
     recipient_email: email,
     subject: 'Invitación a Invoxa',
     type: 'invitation',

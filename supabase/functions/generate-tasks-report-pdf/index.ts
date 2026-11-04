@@ -18,6 +18,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller, userInCompany } from '../_shared/company.ts'
 import {
   PDFDocument,
   PDFFont,
@@ -115,12 +116,12 @@ Deno.serve(async (req) => {
   const callerId = userResult.user.id
   const targetUserId = body.user_id ?? callerId
   if (targetUserId !== callerId) {
-    const { data: callerProfile } = await adminClient
-      .from('profiles')
-      .select('role')
-      .eq('id', callerId)
-      .single()
-    if (!callerProfile || callerProfile.role !== 'admin') {
+    const caller = await loadCaller(adminClient, callerId)
+    if (
+      !caller ||
+      !caller.isAdmin ||
+      !(await userInCompany(adminClient, targetUserId, caller.companyId))
+    ) {
       return jsonResponse({ error: 'Forbidden' }, 403)
     }
   }

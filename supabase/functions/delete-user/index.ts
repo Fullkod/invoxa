@@ -19,6 +19,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller } from '../_shared/company.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -75,13 +76,8 @@ Deno.serve(async (req) => {
     auth: { persistSession: false },
   })
 
-  const { data: callerProfile, error: profileErr } = await adminClient
-    .from('profiles')
-    .select('role')
-    .eq('id', userResult.user.id)
-    .single()
-
-  if (profileErr || !callerProfile || callerProfile.role !== 'admin') {
+  const caller = await loadCaller(adminClient, userResult.user.id)
+  if (!caller || !caller.isAdmin) {
     return jsonResponse({ error: 'Forbidden — admin only' }, 403)
   }
 
@@ -108,11 +104,11 @@ Deno.serve(async (req) => {
   // Make sure the target exists and grab its role.
   const { data: target, error: targetErr } = await adminClient
     .from('profiles')
-    .select('id, role')
+    .select('id, role, company_id')
     .eq('id', targetId)
     .single()
 
-  if (targetErr || !target) {
+  if (targetErr || !target || target.company_id !== caller.companyId) {
     return jsonResponse({ error: 'El usuario no existe.' }, 404)
   }
 
@@ -122,6 +118,7 @@ Deno.serve(async (req) => {
       .from('profiles')
       .select('id', { count: 'exact', head: true })
       .eq('role', 'admin')
+      .eq('company_id', caller.companyId)
 
     if (adminCountErr) {
       return jsonResponse({ error: adminCountErr.message }, 500)

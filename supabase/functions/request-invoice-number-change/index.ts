@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
   // Verify the invoice exists and the caller is the owner.
   const { data: invoice, error: invoiceErr } = await adminClient
     .from('invoices')
-    .select('id, invoice_number, user_id')
+    .select('id, invoice_number, user_id, company_id')
     .eq('id', invoice_id)
     .single()
 
@@ -123,6 +123,7 @@ Deno.serve(async (req) => {
   const { count: existingCount } = await adminClient
     .from('invoices')
     .select('id', { count: 'exact', head: true })
+    .eq('company_id', invoice.company_id)
     .eq('invoice_number', requested_invoice_number)
 
   if (existingCount && existingCount > 0) {
@@ -154,8 +155,15 @@ Deno.serve(async (req) => {
   }
 
   // Email log — actual notification can be wired to a provider later.
+  const { data: invoiceCompany } = await adminClient
+    .from('companies')
+    .select('billing_email')
+    .eq('id', invoice.company_id)
+    .single()
+
   await adminClient.from('email_logs').insert({
-    recipient_email: 'admin@informagestudios.com',
+    company_id: invoice.company_id,
+    recipient_email: invoiceCompany?.billing_email ?? 'admins',
     subject: `Solicitud de cambio de consecutivo · ${invoice.invoice_number}`,
     type: 'invoice_number_change_request',
     status: 'pending',

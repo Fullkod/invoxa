@@ -10,6 +10,7 @@
 // =============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { loadCaller } from '../_shared/company.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -65,13 +66,8 @@ Deno.serve(async (req) => {
     auth: { persistSession: false },
   })
 
-  const { data: callerProfile } = await adminClient
-    .from('profiles')
-    .select('role')
-    .eq('id', userResult.user.id)
-    .single()
-
-  if (!callerProfile || callerProfile.role !== 'admin') {
+  const caller = await loadCaller(adminClient, userResult.user.id)
+  if (!caller || !caller.isAdmin) {
     return jsonResponse(
       { error: 'Forbidden — solo el admin puede cambiar consecutivos' },
       403,
@@ -91,6 +87,16 @@ Deno.serve(async (req) => {
       { error: 'invoice_id y new_invoice_number son requeridos' },
       400,
     )
+  }
+
+  // The invoice must belong to the caller's company.
+  const { data: targetInvoice } = await adminClient
+    .from('invoices')
+    .select('company_id')
+    .eq('id', invoice_id)
+    .maybeSingle()
+  if (!targetInvoice || targetInvoice.company_id !== caller.companyId) {
+    return jsonResponse({ error: 'Factura no encontrada' }, 404)
   }
 
   const { data, error } = await adminClient.rpc(
