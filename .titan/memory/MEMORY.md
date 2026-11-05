@@ -16,6 +16,7 @@
 ## reference/ — Donde encontrar cosas
 - [Correo de Fullkod](reference/correo-fullkod-resend.md) — @fullkod.com va por Resend (contact@, support@), sin reenvío; cada proyecto decide cómo avisar de sus formularios
 - [2026-11-04 — Infraestructura, despliegue y dónde está cada cosa](reference/2026-11-04-infraestructura-y-despliegue.md)
+- [2026-11-05 — Embeds ambiguos (PGRST201): nombrar el FK cuando hay dos hacia la misma tabla](reference/2026-11-05-embeds-ambiguos-postgrest.md)
 
 ## feedback/ — Correcciones de Roberto
 - [2026-11-04 — QA en navegador con Playwright, nunca con Chrome](feedback/2026-11-04-qa-con-playwright.md)
