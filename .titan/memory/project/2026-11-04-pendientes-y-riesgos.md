@@ -5,7 +5,9 @@ Fuente: lectura de `supabase/migrations/` (sobre todo `20260506000007_fix_genera
 `supabase/functions/` y `docs/pending/`. Nada de esto está decidido con Roberto: son hallazgos para priorizar.
 
 ## Pendiente documentado
-- **Envío de correos** (`docs/pending/email-integration.md`): las funciones solo insertan en `email_logs`
+- **Envío de correos** (`docs/pending/email-integration.md`). *2026-11-05:* los de Auth (invitación y
+  recuperación) ya salen por Resend desde `no-reply@fullkod.com`, ver [correo de Auth](2026-11-05-correo-auth-resend.md);
+  sigue pendiente todo lo demás: las funciones solo insertan en `email_logs`
   con `status='pending'`. Falta `send-email` + proveedor (propuesta: Resend) y plantillas. `generate-invoice`
   no registra `invoice_generated`. Si se usa `@fullkod.com`, ver [correo Fullkod](../reference/correo-fullkod-resend.md)
   (cuota compartida, remitente propio).

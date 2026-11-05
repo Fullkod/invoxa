@@ -17,6 +17,9 @@ metadata:
   Resend: habría que añadirlo y verificarlo aparte.
 - Detalle del DNS: `memoria/reference/dominio-fullkod-dns.md` en el repo `Fullkod/hub`.
 
+**Uso en Invoxa (2026-11-05):** Supabase Auth envía como «Invoxa» `<no-reply@fullkod.com>` con una API key
+propia en Resend; consume la cuota compartida. Ver [correo de Auth](../project/2026-11-05-correo-auth-resend.md).
+
 **Cómo aplicarlo en este proyecto:** si tiene (o va a tener) un formulario de contacto o cualquier mensaje que deba
 leer el equipo, **el proyecto tiene que buscar su propia forma de avisar** (notificación en la app, alerta por
 WhatsApp, tarea en Tasknic, correo a una dirección que alguien lea…). No dar por hecho que alguien mira los buzones de

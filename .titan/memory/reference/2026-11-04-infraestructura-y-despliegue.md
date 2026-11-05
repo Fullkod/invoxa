@@ -3,13 +3,23 @@
 Date: 2026-11-04
 Fuente: `vercel.json`, `capacitor.config.ts`, `.github/workflows/`, `supabase/`, `.env.local.example`.
 
-- **Supabase en plan Free:** se pausa tras ~7 días sin actividad. `.github/workflows/keep-supabase-alive.yml`
+- ~~**Supabase en plan Free:**~~ (superado 2026-11-05: ahora Pro en la org de CommerceCraft, no se pausa; ver
+  [traspaso](../project/2026-11-05-traspaso-bd-commercecraft.md)) se pausa tras ~7 días sin actividad. `.github/workflows/keep-supabase-alive.yml`
   llama a diario (06:00 UTC) al RPC `public.ping()` con los secrets `SUPABASE_URL` y `SUPABASE_ANON_KEY`
   del repo. Si el proyecto aparece pausado, revisar primero ese workflow.
 - **Variables:** el frontend solo usa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`. Las Edge Functions usan
   `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` y `APP_URL` (para el enlace de invitación a
   `/accept-invite`; por defecto `http://localhost:5173`, así que **debe estar configurada en producción**).
 - **Correo de invitación:** lo envía Supabase Auth con su SMTP (límites bajos del SMTP por defecto).
+  **2026-11-05:** plantillas propias en español (`supabase/templates/invite.html` y `recovery.html`, estética
+  Invoxa) subidas con `npm run auth:templates` (PATCH solo de esas plantillas; nunca `supabase config push`).
+  Decidido: remitente **«Invoxa» `<no-reply@fullkod.com>`** por SMTP de Resend (`smtp.resend.com:465`,
+  usuario `resend`, password = API key propia de Invoxa, la pone Roberto en el dashboard). El remitente no
+  ahorra cuota (cuenta todo lo que sale de fullkod.com); si `send-email` dispara el volumen, valorar cuenta o
+  subdominio Resend propio. SMTP activado y probado el 2026-11-05: invitación de prueba recibida en la bandeja
+  de entrada (no spam), remitente y diseño correctos; usuario de prueba borrado. `rate_limit_email_sent` = 30/h.
+  `robert.cabrer92@gmail.com` es admin de Informage: no usarlo para pruebas de invitación ni borrarlo.
+  Los enlaces caducan en 1 h (`mailer_otp_exp` = 3600); las plantillas lo dicen.
 - **Web:** Vercel, SPA con rewrite a `/`, PWA con Workbox (`sw.js` sin caché) y compresión Brotli/Gzip.
 - **Nativo:** Capacitor 8, `appId: ai.commercecraft.invoxa` (dominio CommerceCraft, no `com.fullkod.*`).
   Assets nativos con `npm run native:assets` (fondo `#FBF7F0`).
@@ -22,16 +32,19 @@ Fuente: `vercel.json`, `capacitor.config.ts`, `.github/workflows/`, `supabase/`,
   terracota, Fraunces/Geist. Plantilla original de factura: `docs/empty.docx`.
 - **Brief original:** `docs/instructions.md` (requisitos; algunas partes superadas por el código, ver
   `BUSINESS_LOGIC.md`).
-- **Acceso a Supabase (desde 2026-11-04):** cuenta de Claudia, token `SUPABASE_ACCESS_TOKEN` en `.env.local`
+- **Acceso a Supabase (desde 2026-11-04):** ~~cuenta de Claudia~~ (2026-11-05: token nuevo con acceso al proyecto en la org de
+  CommerceCraft; las rutas de organización de la Management API devuelven 403, las del proyecto funcionan), token `SUPABASE_ACCESS_TOKEN` en `.env.local`
   (no en git). Proyecto `prabpfidllznbtthmkxz`, ya enlazado. CLI desde PowerShell en la raíz (la función del
   perfil lee `.env.local`); en Git Bash hay que exportar la variable a mano. MCP: `.mcp.json` →
-  `scripts/supabase-mcp.mjs`. Roberto pidió trabajar **directamente sobre producción** (sin Supabase local).
+  `scripts/supabase-mcp.mjs` (lee el token **al arrancar**: tras cambiarlo, reconectar el MCP con `/mcp` o
+  reiniciar la sesión, o seguirá usando el viejo y dará 403). Roberto pidió trabajar **directamente sobre producción** (sin Supabase local).
 - **Historial de migraciones:** `20260529000000` y `20260619000000` se habían aplicado a mano; se marcaron
   con `supabase migration repair --status applied` el 2026-11-04. Antes de `db push`, mirar `migration list`.
 - **APP_URL (corregido 2026-11-04):** en producción valía `http://localhost:5173`, así que los enlaces de
   invitación llevaban a localhost. Ahora `https://invoxa.fullkod.com` (dominio propio desde 2026-11-04;
   `invoxa-ten.vercel.app` redirige 307 al nuevo). Auth (Site URL y redirect
   `/accept-invite`) ya estaba bien. Comprobarlo con `supabase secrets list` comparando el hash sha256.
+- **Copia de seguridad (2026-11-05):** `npm run backup:supabase` → `C:\Local-Disc-D\Backups\invoxa\<fecha>\` (fuera del repo).
 - **Dominio (2026-11-04):** producción en `https://invoxa.fullkod.com` (Vercel). Supabase Auth: Site URL =
   ese dominio; redirects permitidos: localhost, invoxa-ten.vercel.app y invoxa.fullkod.com (`/accept-invite`).
   SEO (`index.html`, `robots.txt`, `sitemap.xml`, landing) apunta al dominio nuevo.

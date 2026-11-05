@@ -10,6 +10,8 @@
     "preview": "vite preview",
     "native:resources": "node scripts/build-native-assets.mjs",
     "native:assets": "npm run native:resources && capacitor-assets generate --iconBackgroundColor \"#FBF7F0\" --iconBackgroundColorDark \"#FBF7F0\" --splashBackgroundColor \"#FBF7F0\" --splashBackgroundColorDark \"#FBF7F0\"",
+    "backup:supabase": "node scripts/backup-supabase.mjs",
+    "auth:templates": "node scripts/push-auth-templates.mjs",
     "native:sync": "npm run build && cap sync",
     "native:android": "npm run native:sync && cap open android",
     "native:ios": "npm run native:sync && cap open ios",

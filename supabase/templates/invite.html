@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Invitación a Invoxa</title>
+  </head>
+  <body style="margin:0;padding:0;background:#FBF7F0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF7F0;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+            <tr>
+              <td style="padding:0 4px 20px;font-family:Georgia,'Times New Roman',serif;font-size:26px;color:#2A1F17;">
+                Invoxa<span style="color:#C2410C;">.</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#FFFFFF;border:1px solid #E6DCC6;border-radius:12px;padding:32px 28px;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;color:#2A1F17;">
+                <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:normal;color:#2A1F17;">
+                  {{ if .Data.full_name }}Hola, {{ .Data.full_name }}{{ else }}Hola{{ end }}
+                </h1>
+                <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#4A3A2C;">
+                  Te han invitado a <strong>Invoxa</strong>, la herramienta donde registrarás tus horas y generarás tus
+                  facturas mensuales.
+                </p>
+                <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#4A3A2C;">
+                  Pulsa el botón para crear tu contraseña y entrar por primera vez.
+                </p>
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="border-radius:8px;background:#C2410C;">
+                      <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:8px;">
+                        Aceptar invitación
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:#7A6A58;">
+                  El enlace es personal y caduca en 1 hora. Si no esperabas esta invitación, puedes ignorar este correo.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 4px 0;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#7A6A58;">
+                Este correo se envía desde una dirección que no recibe respuestas. ¿Dudas? Escribe a
+                <a href="mailto:support@fullkod.com" style="color:#C2410C;">support@fullkod.com</a>.<br />
+                Invoxa · Developed by Fullkod
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
