@@ -17,3 +17,6 @@ Tareas Tasknic: INV0001 (madre), INV0002–INV0007.
 - Storage no se movió: el admin lee los PDF de su empresa resolviendo la empresa por la carpeta `{user_id}`.
 - Antes de un `db push`: `supabase migration list` + `--dry-run` (en Git Bash exportar
   `SUPABASE_ACCESS_TOKEN` desde `.env.local`). Edge Functions: `supabase functions deploy --use-api`.
+- **Empresas en producción (2026-11-04):** Informage Studios (`INF`, USD) y CommerceCraft (ASCEND HOLDINGS
+  S.L., ESB19985878, `CC`, EUR, admin invitado `technology@commercecraft.ai`). Datos de CommerceCraft
+  sacados de una factura de ejemplo de Roberto.

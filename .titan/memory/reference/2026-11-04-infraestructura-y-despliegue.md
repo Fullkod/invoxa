@@ -28,3 +28,6 @@ Fuente: `vercel.json`, `capacitor.config.ts`, `.github/workflows/`, `supabase/`,
   `scripts/supabase-mcp.mjs`. Roberto pidió trabajar **directamente sobre producción** (sin Supabase local).
 - **Historial de migraciones:** `20260529000000` y `20260619000000` se habían aplicado a mano; se marcaron
   con `supabase migration repair --status applied` el 2026-11-04. Antes de `db push`, mirar `migration list`.
+- **APP_URL (corregido 2026-11-04):** en producción valía `http://localhost:5173`, así que los enlaces de
+  invitación llevaban a localhost. Ahora `https://invoxa-ten.vercel.app`. Auth (Site URL y redirect
+  `/accept-invite`) ya estaba bien. Comprobarlo con `supabase secrets list` comparando el hash sha256.
