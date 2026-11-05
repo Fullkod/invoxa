@@ -3,6 +3,8 @@
 -- The ids of a_admin / a_user are real Informage profiles; adjust if they change.
 -- Isolation test for PRP-001 Phase 2. Everything is rolled back by the final
 -- RAISE EXCEPTION: no data persists.
+-- Extended 2026-11-05 (isolation audit): all business tables + privileged RPCs.
+-- Any token ending in "!" is a leak.
 do $$
 declare
   a_company uuid := '5b1c2e0a-7d43-4f8e-9a61-3c0f5e2d9b17';
@@ -171,6 +173,96 @@ begin
     select count(*) into n from api_keys
     where id = b_key_id and key_hash = encode(sha256(convert_to(b_key, 'UTF8')), 'hex');
     r := r || ' hash_matches=' || n;
+  end;
+
+  -- ===== Audit 2026-11-05: the tables PRP-001 did not cover =====
+  -- Expected: every "A_admin sees B ..." / "upd_B_..." = 0, every "*=blocked".
+  declare
+    b_invoice uuid;
+  begin
+    insert into user_billing_profiles (user_id, legal_name, tax_id, billing_email, country, bank_account)
+    values (b_user, 'B user SL', 'B-TAX', 'b-billing@test.invalid', 'ES', 'ES00 SECRET');
+    insert into user_project_assignments (user_id, project_id, is_current, start_date)
+    values (b_user, b_project, true, current_date);
+    insert into invoice_requests (requested_by, user_id, period_start, period_end)
+    values (b_admin, b_user, date_trunc('month', current_date)::date, current_date);
+    insert into invoices (user_id, invoice_number, user_invoice_sequence, invoice_date, period_start, period_end, currency)
+    values (b_user, 'TSTB-BUSR-2026-0001', 1, current_date, '2026-01-01', '2026-01-31', 'EUR')
+    returning id into b_invoice;
+    insert into invoice_number_change_requests (invoice_id, requested_by, requested_by_role, current_invoice_number, requested_invoice_number)
+    values (b_invoice, b_user, 'user', 'TSTB-BUSR-2026-0001', 'TSTB-BUSR-2026-0009');
+    insert into invoice_number_history (invoice_id, previous_invoice_number, new_invoice_number, changed_by)
+    values (b_invoice, 'TSTB-BUSR-2026-0000', 'TSTB-BUSR-2026-0001', b_admin);
+    insert into email_logs (recipient_email, subject, type, company_id)
+    values ('b-user@test.invalid', 'B mail', 'invoice_request', b_company);
+
+    perform set_config('request.jwt.claims', json_build_object('sub', a_admin, 'role', 'authenticated')::text, true);
+    execute 'set local role authenticated';
+    select count(*) into n from user_billing_profiles where user_id = b_user;      r := r || ' | AUDIT A_admin sees B billing=' || n;
+    select count(*) into n from user_project_assignments where user_id = b_user;   r := r || ' assignments=' || n;
+    select count(*) into n from invoice_requests where user_id = b_user;           r := r || ' inv_requests=' || n;
+    select count(*) into n from invoices where id = b_invoice;                     r := r || ' invoices=' || n;
+    select count(*) into n from invoice_number_change_requests where invoice_id = b_invoice; r := r || ' num_requests=' || n;
+    select count(*) into n from invoice_number_history where invoice_id = b_invoice;  r := r || ' num_history=' || n;
+    select count(*) into n from email_logs where company_id = b_company;           r := r || ' email_logs=' || n;
+    select count(*) into n from companies where id = b_company;                    r := r || ' company=' || n;
+    update user_billing_profiles set bank_account = 'hacked' where user_id = b_user;
+    get diagnostics n = row_count;                                                 r := r || ' upd_B_billing=' || n;
+    update companies set name = 'hacked' where id = b_company;
+    get diagnostics n = row_count;                                                 r := r || ' upd_B_company=' || n;
+    update user_project_assignments set is_current = false where user_id = b_user;
+    get diagnostics n = row_count;                                                 r := r || ' upd_B_assign=' || n;
+    delete from invoice_requests where user_id = b_user;
+    get diagnostics n = row_count;                                                 r := r || ' del_B_requests=' || n;
+    begin
+      insert into user_project_assignments (user_id, project_id, is_current, start_date)
+      values (a_user, b_project, true, current_date);
+      r := r || ' A_USER_INTO_B_PROJECT=ALLOWED!';
+    exception when others then r := r || ' cross_assign=blocked';
+    end;
+    begin
+      insert into invoice_requests (requested_by, user_id, period_start, period_end, company_id)
+      values (a_admin, b_user, current_date, current_date, b_company);
+      r := r || ' SPOOF_REQUEST=ALLOWED!';
+    exception when others then r := r || ' spoof_request=blocked';
+    end;
+    -- Privileged RPCs (the hole fixed by 20261105000000)
+    begin
+      perform apply_invoice_number_change(b_invoice, 'HACKED', a_admin, null, null);
+      r := r || ' RPC_RENAME_B=ALLOWED!';
+    exception when others then r := r || ' rpc_rename=blocked';
+    end;
+    begin
+      perform generate_user_invoice(b_user, '2026-02-01', '2026-02-28');
+      r := r || ' RPC_GENERATE_B=ALLOWED!';
+    exception when others then r := r || ' rpc_generate=blocked';
+    end;
+    begin
+      perform notify_user(b_user, 'invoice_created', 'phishing');
+      r := r || ' RPC_NOTIFY_B=ALLOWED!';
+    exception when others then r := r || ' rpc_notify=blocked';
+    end;
+    begin
+      perform next_invoice_number(b_user, 2026);
+      r := r || ' RPC_NEXT_NUMBER_B=ALLOWED!';
+    exception when others then r := r || ' rpc_next_number=blocked';
+    end;
+    execute 'reset role';
+
+    -- A collaborator of A cannot read B's billing data either
+    perform set_config('request.jwt.claims', json_build_object('sub', a_user, 'role', 'authenticated')::text, true);
+    execute 'set local role authenticated';
+    select count(*) into n from user_billing_profiles where user_id = b_user;      r := r || ' A_user sees B billing=' || n;
+    select count(*) into n from invoice_requests where user_id = b_user;           r := r || ' inv_requests=' || n;
+    execute 'reset role';
+
+    -- No privileged function may be executable by anon/authenticated
+    select string_agg(p.proname, ',') into v
+    from pg_proc p join pg_namespace ns on ns.oid = p.pronamespace
+    where ns.nspname = 'public'
+      and p.proname in ('generate_user_invoice', 'apply_invoice_number_change', 'next_invoice_number', 'notify_user')
+      and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'));
+    r := r || ' | exposed_rpcs=' || coalesce(v, 'none');
   end;
 
   raise exception 'TEST_ROLLBACK%', r;

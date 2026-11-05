@@ -57,6 +57,10 @@ Código organizado por feature en `src/features/` (admin, auth, user, invoiceNum
   vive en Edge Functions; el cliente usa solo la anon key.
 - **NUNCA** exponer secretos (ni en código, ni en memoria, ni en variables `VITE_*`). `.env.local` está en `.gitignore`.
 - Cambios de esquema como migraciones en `supabase/migrations/`, con RLS en toda tabla.
+- **Toda función nueva en `public` declara sus grants** (`revoke all ... from public, anon, authenticated`
+  y luego `grant execute` solo a quien la necesite). Supabase da EXECUTE a `anon` por defecto: una
+  `security definer` sin esto es invocable con la anon key por `/rest/v1/rpc/` (fuga real, 2026-11-05).
+  Si la llama un usuario, comprueba dentro quién es (`auth.uid()`) y su empresa.
 - Validar con Zod la entrada de formularios y de Edge Functions.
 - Nuevo `any` prohibido (usar `unknown`).
 - Commits: `feat:` / `fix:` / `refactor:` / `chore:` / `docs:` en inglés.
