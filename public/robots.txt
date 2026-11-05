@@ -10,4 +10,4 @@ Disallow: /forgot-password
 Disallow: /accept-invite
 Disallow: /landing
 
-Sitemap: https://invoxa-ten.vercel.app/sitemap.xml
+Sitemap: https://invoxa.fullkod.com/sitemap.xml

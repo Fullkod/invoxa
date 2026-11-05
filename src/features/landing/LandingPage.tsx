@@ -1208,7 +1208,7 @@ export function LandingPage() {
   useDocumentMeta({
     title: meta.title,
     description: meta.description,
-    canonical: 'https://invoxa-ten.vercel.app/',
+    canonical: 'https://invoxa.fullkod.com/',
   })
 
   // The landing is web-only — never expose it inside the native (Capacitor) shell.
