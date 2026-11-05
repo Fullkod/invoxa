@@ -1,24 +1,21 @@
-import { endOfMonth, format, startOfMonth } from 'date-fns'
+import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
   ArrowLeft,
   ChevronRight,
-  Clock,
   FileText,
   Users,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AppShell } from '../../../components/layout/AppShell'
 import { Card, CardBody, CardHeader } from '../../../components/ui/Card'
-import { MonthPicker } from '../../../components/ui/MonthPicker'
 import { Pill } from '../../../components/ui/Pill'
 import type { InvoiceStatus } from '../../../types/invoice'
-import { useProjectInvoices, useProjectTasks } from './activityQueries'
+import { useProjectInvoices } from './activityQueries'
+import { ProjectTasksCard } from './ProjectTasksCard'
 import { useProjectMembers } from './membersQueries'
 import { ProjectForm } from './ProjectForm'
 import { useProject, useUpdateProject } from './queries'
-import { AgentSourcePill } from '../../user/tasks/AgentSourcePill'
 
 const STATUS_LABEL: Record<InvoiceStatus, string> = {
   draft: 'Borrador',
@@ -48,19 +45,9 @@ const STATUS_TONE: Record<
 export function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [period, setPeriod] = useState<Date>(new Date())
-  const periodStart = useMemo(
-    () => format(startOfMonth(period), 'yyyy-MM-dd'),
-    [period],
-  )
-  const periodEnd = useMemo(
-    () => format(endOfMonth(period), 'yyyy-MM-dd'),
-    [period],
-  )
 
   const { data: project, isLoading, error } = useProject(id)
   const { data: members = [] } = useProjectMembers(id)
-  const { data: tasksData } = useProjectTasks(id, periodStart, periodEnd)
   const { data: invoices = [] } = useProjectInvoices(id)
   const updateProject = useUpdateProject(id ?? '')
 
@@ -218,71 +205,14 @@ export function ProjectDetailPage() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader
-            title="Tareas y horas del periodo"
-            description={`${tasksData?.uniqueUsers ?? 0} ${
-              (tasksData?.uniqueUsers ?? 0) === 1
-                ? 'colaborador'
-                : 'colaboradores'
-            } · ${formatHours(tasksData?.totalHours ?? 0)}`}
-            action={<MonthPicker value={period} onChange={setPeriod} />}
-          />
-          <CardBody>
-            {tasksData == null ? (
-              <p className="text-sm text-muted">Cargando…</p>
-            ) : tasksData.tasks.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-border bg-subtle p-6 text-center">
-                <Clock size={20} className="mx-auto text-muted" />
-                <p className="mt-2 text-xs text-muted">
-                  Nadie registró tareas en este proyecto durante el periodo
-                  seleccionado.
-                </p>
-              </div>
-            ) : (
-              <ul className="divide-y divide-border">
-                {tasksData.tasks.slice(0, 8).map((t) => (
-                  <li
-                    key={t.id}
-                    className="flex items-start gap-3 py-2.5 text-sm"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="font-semibold text-text">
-                          {t.name}
-                        </span>
-                        {t.invoice_id ? (
-                          <Pill tone="green">Facturada</Pill>
-                        ) : (
-                          <Pill tone="muted">Sin facturar</Pill>
-                        )}
-                        <AgentSourcePill source={t.source} />
-                      </div>
-                      <p className="mt-0.5 text-xs text-muted">
-                        {t.user?.full_name || t.user?.email || '—'} ·{' '}
-                        {format(
-                          new Date(t.task_date + 'T00:00:00'),
-                          'd MMM yyyy',
-                          { locale: es },
-                        )}
-                      </p>
-                    </div>
-                    <div className="font-display tabular text-sm font-medium text-text">
-                      {formatHours(Number(t.hours))}
-                    </div>
-                  </li>
-                ))}
-                {tasksData.tasks.length > 8 && (
-                  <li className="pt-2 text-xs text-muted">
-                    Y {tasksData.tasks.length - 8} más en el periodo…
-                  </li>
-                )}
-              </ul>
-            )}
-          </CardBody>
-        </Card>
+      <div className="mt-6">
+        <ProjectTasksCard
+          projectId={project.id}
+          requiresApproval={Boolean(project.requires_approval)}
+        />
+      </div>
 
+      <div className="mt-4">
         <Card>
           <CardHeader
             title="Facturas con este proyecto"
@@ -349,13 +279,6 @@ export function ProjectDetailPage() {
       </div>
     </AppShell>
   )
-}
-
-function formatHours(value: number): string {
-  return `${new Intl.NumberFormat('es-CO', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 1,
-  }).format(value)} h`
 }
 
 function formatCurrency(value: number, currency: string) {

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../../../lib/supabase/client'
 import type { InvoiceWithUser } from '../../../types/invoice'
+import type { ReviewStatus } from '../../../types/supervision'
 import type { TaskSource } from '../../../types/task'
 
 /**
@@ -19,6 +20,7 @@ export type ProjectTaskWithUser = {
   task_date: string
   hours: number
   source?: TaskSource
+  review_status: ReviewStatus
   user: {
     id: string
     full_name: string | null
@@ -32,25 +34,30 @@ export type ProjectTasksData = {
   uniqueUsers: number
 }
 
+/** `periodStart`/`periodEnd` null = whole project history. */
 export function useProjectTasks(
   projectId: string | undefined,
-  periodStart: string,
-  periodEnd: string,
+  periodStart: string | null,
+  periodEnd: string | null,
 ) {
   return useQuery<ProjectTasksData>({
     queryKey: ['admin-project-tasks', projectId, periodStart, periodEnd],
     enabled: Boolean(projectId),
     queryFn: async () => {
       if (!projectId) return { tasks: [], totalHours: 0, uniqueUsers: 0 }
-      const { data, error } = await supabase
+      // tasks has two FKs to profiles (user_id, reviewed_by): the embed must
+      // name the constraint or PostgREST rejects it as ambiguous (PGRST201).
+      let query = supabase
         .from('tasks')
         .select(
-          'id, user_id, project_id, invoice_id, name, description, task_date, hours, source, user:profiles(id, full_name, email)',
+          'id, user_id, project_id, invoice_id, name, description, task_date, hours, source, review_status, user:profiles!tasks_user_id_fkey(id, full_name, email)',
         )
         .eq('project_id', projectId)
-        .gte('task_date', periodStart)
-        .lte('task_date', periodEnd)
+      if (periodStart) query = query.gte('task_date', periodStart)
+      if (periodEnd) query = query.lte('task_date', periodEnd)
+      const { data, error } = await query
         .order('task_date', { ascending: false })
+        .order('created_at', { ascending: false })
 
       if (error) throw error
       const tasks = (data ?? []) as unknown as ProjectTaskWithUser[]
