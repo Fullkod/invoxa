@@ -118,6 +118,61 @@ begin
   select invoice_number into v from next_invoice_number(a_user, 2026);
   r := r || ' A number=' || v;
 
+  -- ===== API keys (PRP-002) =====
+  declare
+    b_key_id uuid;
+    b_key text;
+  begin
+    perform set_config('request.jwt.claims', json_build_object('sub', b_user, 'role', 'authenticated')::text, true);
+    execute 'set local role authenticated';
+    select k.id, k.api_key into b_key_id, b_key from create_api_key('B agent') k;
+    r := r || ' | B key=' || (b_key like 'ivx_%') || ' len=' || length(b_key);
+    select count(*) into n from api_keys;                           r := r || ' B_user keys=' || n;
+    begin
+      perform key_hash from api_keys;
+      r := r || ' HASH_READABLE!';
+    exception when others then r := r || ' hash=hidden';
+    end;
+    begin
+      insert into api_keys (user_id, company_id, name, key_prefix, key_hash)
+      values (b_user, b_company, 'direct', 'x', 'x');
+      r := r || ' DIRECT_INSERT=ALLOWED!';
+    exception when others then r := r || ' direct_insert=blocked';
+    end;
+    execute 'reset role';
+
+    perform set_config('request.jwt.claims', json_build_object('sub', a_user, 'role', 'authenticated')::text, true);
+    execute 'set local role authenticated';
+    select count(*) into n from api_keys where user_id = b_user;    r := r || ' A_user sees B keys=' || n;
+    begin
+      perform revoke_api_key(b_key_id);
+      r := r || ' A_USER_REVOKED_B!';
+    exception when others then r := r || ' A_user_revoke=blocked';
+    end;
+    execute 'reset role';
+
+    perform set_config('request.jwt.claims', json_build_object('sub', a_admin, 'role', 'authenticated')::text, true);
+    execute 'set local role authenticated';
+    select count(*) into n from api_keys where user_id = b_user;    r := r || ' A_admin sees B keys=' || n;
+    begin
+      perform create_api_key('admin key');
+      r := r || ' ADMIN_KEY=ALLOWED!';
+    exception when others then r := r || ' admin_key=blocked';
+    end;
+    execute 'reset role';
+
+    perform set_config('request.jwt.claims', json_build_object('sub', b_admin, 'role', 'authenticated')::text, true);
+    execute 'set local role authenticated';
+    select count(*) into n from api_keys;                           r := r || ' B_admin keys=' || n;
+    perform revoke_api_key(b_key_id);
+    execute 'reset role';
+    select count(*) into n from api_keys where id = b_key_id and revoked_at is not null;
+    r := r || ' B_admin_revoked=' || n;
+    select count(*) into n from api_keys
+    where id = b_key_id and key_hash = encode(sha256(convert_to(b_key, 'UTF8')), 'hex');
+    r := r || ' hash_matches=' || n;
+  end;
+
   raise exception 'TEST_ROLLBACK%', r;
 end;
 $$;

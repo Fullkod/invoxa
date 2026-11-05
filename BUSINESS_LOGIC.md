@@ -60,6 +60,7 @@ que lo invita. Los usuarios de una empresa desactivada no pueden usar la app.
 | `invoice_number_change_requests` | Petición de cambio de consecutivo (`pending` / `approved` / `rejected` / `applied`). |
 | `invoice_number_history` | Auditoría de cada cambio de número aplicado. |
 | `notifications` | Avisos in-app en tiempo real (Supabase Realtime). |
+| `api_keys` | Keys personales de agentes (PRP-002): nombre, prefijo, hash SHA-256, último uso, revocación. Sin escritura directa desde el cliente: RPC `create_api_key` / `revoke_api_key`. |
 | `email_logs` | Registro de los correos que el sistema "envía" (ver Pendientes: hoy casi ninguno sale). |
 
 ## Flujos
@@ -91,6 +92,15 @@ banco, cuenta, método de pago, notas por defecto) es opcional y aparece en el P
   (RLS: solo el admin puede tocarla).
 - Puede generar un **informe PDF de horas** de un periodo, agrupado por proyecto con subtotales, para
   justificar su trabajo (`generate-tasks-report-pdf`, bucket `reports`).
+
+- **Desde un agente (PRP-002, 2026-11-04):** el colaborador crea en *Datos de facturación → Acceso para
+  agentes* hasta 5 **API keys personales** (`ivx_…`, se ven una sola vez; en BD solo el hash SHA-256 en
+  `api_keys`). Con ella, Claude Code, Codex o n8n usan la Edge Function `agent-api` (sin JWT, valida la key)
+  para listar sus proyectos, crear/editar/borrar tareas **no facturadas** de proyectos por hora, y consultar
+  tareas, resumen mensual (importe estimado) y facturas propias. La key actúa como ese colaborador, nunca
+  como admin, y deja de valer al revocarla (él o el admin de su empresa), si el usuario pasa a `inactive` o
+  si su empresa se desactiva. Las tareas creadas así llevan `tasks.source = 'api'` y se ven con la marca
+  "Agente". Skill para agentes: `.claude/skills/invoxa/` (gemelo Codex en `plugins/titan-factory-codex/skills/invoxa/`).
 
 ### 5. Solicitud de facturas (admin)
 

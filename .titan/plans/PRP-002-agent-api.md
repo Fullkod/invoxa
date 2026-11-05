@@ -1,6 +1,7 @@
 # PRP-002: API para agentes (Claude Code, Codex, n8n) — registrar y consultar horas
 
-> **Estado**: APROBADO (Roberto, 2026-11-04) — pendiente de implementar en otro chat
+> **Estado**: IMPLEMENTADO (2026-11-04) — migración `20261104000006` aplicada y `agent-api` desplegada en
+> producción; frontend y skill commiteados, **pendiente de push** (Vercel) con permiso de Roberto.
 > **Fecha**: 2026-11-04
 > **Proyecto**: Invoxa
 > **Pedido por**: Roberto Gabriel Cabrera Álvarez
@@ -173,7 +174,21 @@ horas), nunca inventar horas. `GET /skill` en la API para descargar la versión 
 
 ## 🧠 Aprendizajes (Self-Annealing)
 
-_(vacío)_
+### 2026-11-04: `waitForURL('**/app/**')` no detecta el login
+- **Error**: en el QA con Playwright, ir a `/app/...` sin sesión y esperar `**/app/**` pasa al instante
+  (la URL inicial ya coincide antes de redirigir a `/login`).
+- **Fix**: abrir `/login` y esperar a que exista `sb-*-auth-token` en `localStorage` y la ruta no sea `/login`.
+- **Aplicar en**: cualquier script de QA con login manual.
+
+### 2026-11-04: fecha por defecto en UTC
+- **Error**: `task_date` por defecto = hoy en UTC; de noche en América el servidor ya está en el día siguiente.
+- **Fix**: el skill `invoxa` obliga a mandar siempre `task_date` con la fecha local del usuario.
+- **Aplicar en**: cualquier endpoint que asuma "hoy".
+
+### 2026-11-04: generar la key sin que pase por el chat
+- Para el QA de API se generó la key en local (Node `crypto`), se insertó solo el hash con SQL y la key
+  vivió en un archivo temporal que se borró al terminar. La migración se aplicó con `supabase db push`
+  (no con `apply_migration` del MCP) para conservar la versión `20261104000006`.
 
 ---
 

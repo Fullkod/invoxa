@@ -1,0 +1,62 @@
+[
+  {
+    "name": "section",
+    "ok": true,
+    "detail": "Sección \"Acceso para agentes\" en Datos de facturación",
+    "shot": "screenshots/01-section.png"
+  },
+  {
+    "name": "create",
+    "ok": true,
+    "detail": "Key mostrada una vez (ivx_ + 43 chars)",
+    "shot": "screenshots/02-created.png"
+  },
+  {
+    "name": "copy",
+    "ok": true,
+    "detail": "Botón Copiar copia la key al portapapeles",
+    "shot": null
+  },
+  {
+    "name": "api-auth",
+    "ok": true,
+    "detail": "GET / → 200",
+    "shot": null
+  },
+  {
+    "name": "api-create",
+    "ok": true,
+    "detail": "POST /tasks → 201",
+    "shot": null
+  },
+  {
+    "name": "agent-pill",
+    "ok": true,
+    "detail": "La tarea creada por API muestra la marca \"Agente\" en /app/tasks",
+    "shot": "screenshots/03-tasks-agent-pill.png"
+  },
+  {
+    "name": "list",
+    "ok": true,
+    "detail": "Lista con prefijo y último uso; la key completa ya no aparece",
+    "shot": "screenshots/04-list.png"
+  },
+  {
+    "name": "mobile",
+    "ok": true,
+    "detail": "Móvil 390px, desbordamiento horizontal = 0px",
+    "shot": "screenshots/05-mobile.png"
+  },
+  {
+    "name": "api-delete",
+    "ok": true,
+    "detail": "DELETE /tasks/:id → 200",
+    "shot": null
+  },
+  {
+    "name": "revoke",
+    "ok": true,
+    "detail": "Revocada desde la UI; GET / → 401",
+    "shot": "screenshots/06-revoked.png"
+  }
+]

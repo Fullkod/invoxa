@@ -18,6 +18,7 @@ import { useProjectInvoices, useProjectTasks } from './activityQueries'
 import { useProjectMembers } from './membersQueries'
 import { ProjectForm } from './ProjectForm'
 import { useProject, useUpdateProject } from './queries'
+import { AgentSourcePill } from '../../user/tasks/AgentSourcePill'
 
 const STATUS_LABEL: Record<InvoiceStatus, string> = {
   draft: 'Borrador',
@@ -255,6 +256,7 @@ export function ProjectDetailPage() {
                         ) : (
                           <Pill tone="muted">Sin facturar</Pill>
                         )}
+                        <AgentSourcePill source={t.source} />
                       </div>
                       <p className="mt-0.5 text-xs text-muted">
                         {t.user?.full_name || t.user?.email || '—'} ·{' '}

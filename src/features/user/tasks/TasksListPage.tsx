@@ -18,6 +18,7 @@ import { MonthPicker } from '../../../components/ui/MonthPicker'
 import { Pill } from '../../../components/ui/Pill'
 import { StatCard } from '../../../components/ui/StatCard'
 import { openExternalUrl } from '../../../lib/native/openUrl'
+import { AgentSourcePill } from './AgentSourcePill'
 import type { TaskWithProject } from '../../../types/task'
 import {
   getTasksReportPdfSignedUrl,
@@ -310,6 +311,7 @@ function TaskRow({
               <Lock size={9} className="inline" /> Facturada
             </Pill>
           )}
+          <AgentSourcePill source={task.source} />
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
           <Pill tone="violet">{task.project.name}</Pill>

@@ -9,6 +9,7 @@ import { Field } from '../../../components/ui/Field'
 import { Pill } from '../../../components/ui/Pill'
 import { Textarea } from '../../../components/ui/Textarea'
 import { isBillingProfileComplete } from '../../../types/billingProfile'
+import { AgentAccessCard } from '../api-keys/AgentAccessCard'
 import {
   billingProfileSchema,
   type BillingProfileFormValues,
@@ -262,6 +263,12 @@ export function BillingProfilePage() {
             </Button>
           </div>
         </form>
+      )}
+
+      {!isLoading && (
+        <div className="mt-6">
+          <AgentAccessCard />
+        </div>
       )}
     </AppShell>
   )

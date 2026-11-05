@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../../../lib/supabase/client'
 import type { InvoiceWithUser } from '../../../types/invoice'
+import type { TaskSource } from '../../../types/task'
 
 /**
  * Tasks registered against a project within a period, plus the total
@@ -17,6 +18,7 @@ export type ProjectTaskWithUser = {
   description: string | null
   task_date: string
   hours: number
+  source?: TaskSource
   user: {
     id: string
     full_name: string | null
@@ -43,7 +45,7 @@ export function useProjectTasks(
       const { data, error } = await supabase
         .from('tasks')
         .select(
-          'id, user_id, project_id, invoice_id, name, description, task_date, hours, user:profiles(id, full_name, email)',
+          'id, user_id, project_id, invoice_id, name, description, task_date, hours, source, user:profiles(id, full_name, email)',
         )
         .eq('project_id', projectId)
         .gte('task_date', periodStart)

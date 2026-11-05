@@ -1,7 +1,11 @@
 import type { Project } from './project'
 
+/** 'api' = created through agent-api with a personal key (PRP-002). */
+export type TaskSource = 'app' | 'api'
+
 export type Task = {
   id: string
+  source?: TaskSource
   user_id: string
   project_id: string
   invoice_id: string | null

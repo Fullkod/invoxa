@@ -12,7 +12,7 @@
 <!-- titan-factory-shared:start -->
 ## Shared agent tooling
 
-- This repository hosts two Titan Factory toolboxes: Codex (`plugins/titan-factory-codex/`, `.codex/`, `.agents/`) and Claude Code (`CLAUDE.md`, `.claude/`). Both use the same 29 `tf-` skills and 7 `tf-` agents; keep the two catalogs in sync when adding, renaming or removing one.
+- This repository hosts two Titan Factory toolboxes: Codex (`plugins/titan-factory-codex/`, `.codex/`, `.agents/`) and Claude Code (`CLAUDE.md`, `.claude/`). Both use the same 29 `tf-` skills and 7 `tf-` agents; keep the two catalogs in sync when adding, renaming or removing one. Project skill `invoxa` (Agent API for collaborators' hours, PRP-002) lives in both `.claude/skills/invoxa/` and `plugins/titan-factory-codex/skills/invoxa/` with identical content.
 - Third-party skills (`supabase`, `supabase-postgres-best-practices`, `logo-design`) live once in `.agents/skills/`, locked in `skills-lock.json`. `.claude/skills/` only holds thin bridges to them.
 - Both share one project memory: `.titan/memory/` (plus `.titan/plans/` and `.titan/qa/`). Never create a second copy such as `.claude/memory/`. Entries may come from either agent; keep the existing format (plain Markdown, `# Title`, one-line index entries appended to `MEMORY.md`).
 - Do not modify the other agent's toolbox unless the task is about it.

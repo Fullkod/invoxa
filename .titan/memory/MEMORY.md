@@ -12,3 +12,6 @@
 ## reference/ — Donde encontrar cosas
 - [Correo de Fullkod](reference/correo-fullkod-resend.md) — @fullkod.com va por Resend (contact@, support@), sin reenvío; cada proyecto decide cómo avisar de sus formularios
 - [2026-11-04 — Infraestructura, despliegue y dónde está cada cosa](reference/2026-11-04-infraestructura-y-despliegue.md)
+
+## feedback/ — Correcciones de Roberto
+- [2026-11-04 — QA en navegador con Playwright, nunca con Chrome](feedback/2026-11-04-qa-con-playwright.md)
