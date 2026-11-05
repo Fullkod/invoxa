@@ -19,6 +19,12 @@ import { Pill } from '../../../components/ui/Pill'
 import { StatCard } from '../../../components/ui/StatCard'
 import { openExternalUrl } from '../../../lib/native/openUrl'
 import { AgentSourcePill } from './AgentSourcePill'
+import { useAuth } from '../../auth/useAuth'
+import { ReviewStatusPill } from '../../review/ReviewStatusPill'
+import {
+  isReviewRelevant,
+  useMySupervisedProjectIds,
+} from '../../review/queries'
 import type { TaskWithProject } from '../../../types/task'
 import {
   getTasksReportPdfSignedUrl,
@@ -29,6 +35,8 @@ import {
 
 export function TasksListPage() {
   const navigate = useNavigate()
+  const { session } = useAuth()
+  const { data: supervised } = useMySupervisedProjectIds(session?.user.id)
   const [period, setPeriod] = useState<Date>(new Date())
   const [projectFilter, setProjectFilter] = useState<string>('all')
 
@@ -244,6 +252,7 @@ export function TasksListPage() {
                 <TaskRow
                   key={t.id}
                   task={t}
+                  showReview={isReviewRelevant(t, supervised)}
                   onClick={() => navigate(`/app/tasks/${t.id}`)}
                 />
               ))}
@@ -282,9 +291,11 @@ function FilterChip({
 function TaskRow({
   task,
   onClick,
+  showReview,
 }: {
   task: TaskWithProject
   onClick: () => void
+  showReview: boolean
 }) {
   const billed = task.invoice_id != null
   return (
@@ -312,6 +323,9 @@ function TaskRow({
             </Pill>
           )}
           <AgentSourcePill source={task.source} />
+          {showReview && !billed && task.review_status && (
+            <ReviewStatusPill status={task.review_status} />
+          )}
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
           <Pill tone="violet">{task.project.name}</Pill>

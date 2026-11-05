@@ -1,0 +1,128 @@
+[
+  {
+    "name": "Admin asigna responsable → tutelada",
+    "ok": true,
+    "detail": "",
+    "shot": "screenshots/01-admin-supervisors.png"
+  },
+  {
+    "name": "Admin activa \"Exigir aprobación\"",
+    "ok": true,
+    "detail": "",
+    "shot": "screenshots/02-admin-requires-approval.png"
+  },
+  {
+    "name": "Colaboradora registra 6 h → \"Pendiente de revisión\"",
+    "ok": true,
+    "detail": "",
+    "shot": "screenshots/03-member-task-pending.png"
+  },
+  {
+    "name": "Responsable ve \"Revisión de horas\" en el menú",
+    "ok": true,
+    "detail": "",
+    "shot": null
+  },
+  {
+    "name": "Bandeja: ve la tarea de su tutelada y no la de M2",
+    "ok": true,
+    "detail": "M2 visibles: 0",
+    "shot": "screenshots/04-supervisor-inbox.png"
+  },
+  {
+    "name": "Sin importes en la respuesta RPC ni en la página",
+    "ok": true,
+    "detail": "rpc: none · page: none",
+    "shot": null
+  },
+  {
+    "name": "REST directo como responsable: tasks vacío",
+    "ok": true,
+    "detail": "status 200, filas 0",
+    "shot": null
+  },
+  {
+    "name": "REST directo como responsable: compensation_settings vacío",
+    "ok": true,
+    "detail": "status 200, filas 0",
+    "shot": null
+  },
+  {
+    "name": "REST directo como responsable: invoices vacío",
+    "ok": true,
+    "detail": "status 200, filas 0",
+    "shot": null
+  },
+  {
+    "name": "REST directo como responsable: invoice_items vacío",
+    "ok": true,
+    "detail": "status 200, filas 0",
+    "shot": null
+  },
+  {
+    "name": "REST directo como responsable: user_billing_profiles vacío",
+    "ok": true,
+    "detail": "status 200, filas 0",
+    "shot": null
+  },
+  {
+    "name": "REST directo: profiles = solo el propio",
+    "ok": true,
+    "detail": "filas 1",
+    "shot": null
+  },
+  {
+    "name": "Responsable propone 4 h con comentario",
+    "ok": true,
+    "detail": "",
+    "shot": "screenshots/05-supervisor-proposed.png"
+  },
+  {
+    "name": "Responsable recibió \"Horas por revisar\"",
+    "ok": true,
+    "detail": "",
+    "shot": "screenshots/06-supervisor-notifications.png"
+  },
+  {
+    "name": "Colaboradora recibió \"Te proponen otras horas\"",
+    "ok": true,
+    "detail": "",
+    "shot": "screenshots/07-member-notification.png"
+  },
+  {
+    "name": "Colaboradora acepta → 4 h y \"Aprobada\"",
+    "ok": true,
+    "detail": "horas en el formulario: 4",
+    "shot": "screenshots/09-member-accepted.png"
+  },
+  {
+    "name": "Cierre de mes bloqueado con 1 tarea sin aprobar",
+    "ok": true,
+    "detail": "botón deshabilitado: true",
+    "shot": "screenshots/10-member-invoice-blocked.png"
+  },
+  {
+    "name": "Admin aprueba desde /admin/review (sale de \"Por revisar\")",
+    "ok": true,
+    "detail": "",
+    "shot": "screenshots/12-admin-approved.png"
+  },
+  {
+    "name": "Factura generada con las horas aprobadas (4 + 2 = 6 h)",
+    "ok": true,
+    "detail": "QAS-QM1-2026-0001 · 6 h",
+    "shot": "screenshots/14-member-invoice.png"
+  },
+  {
+    "name": "Descarga del skill: SKILL.md con el skill invoxa",
+    "ok": true,
+    "detail": "SKILL.md · 6264 caracteres",
+    "shot": "screenshots/15-member-skill-download.png"
+  },
+  {
+    "name": "Móvil 390 px sin scroll horizontal",
+    "ok": true,
+    "detail": "overflow 0px",
+    "shot": "screenshots/16-mobile-review.png"
+  }
+]

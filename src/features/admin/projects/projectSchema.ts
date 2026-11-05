@@ -7,6 +7,7 @@ export const projectSchema = z.object({
     .max(120, 'Máximo 120 caracteres'),
   description: z.string().max(500, 'Máximo 500 caracteres').optional(),
   status: z.enum(['active', 'inactive']),
+  requires_approval: z.boolean(),
 })
 
 export type ProjectFormValues = z.infer<typeof projectSchema>

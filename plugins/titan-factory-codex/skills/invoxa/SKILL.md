@@ -72,6 +72,12 @@ Códigos: `401` key ausente, inválida, revocada o usuario/empresa inactivos (di
 su key en Invoxa) · `404` no existe o no es tuyo · `409` facturada o nombre ambiguo · `400` datos
 inválidos (lee `details`).
 
+**Revisión de horas (PRP-003):** cada tarea trae `review: { status, proposed_hours, comment }` con
+`status` = `pending` / `approved` / `changes_proposed`. Si un responsable propone otras horas
+(`changes_proposed`), avísale al usuario: la respuesta (aceptar o no) se hace en la app, no por API.
+Editar una tarea ya revisada la devuelve a `pending`; dilo antes de un `PATCH` sobre una aprobada. En
+proyectos que exigen aprobación, solo se facturan las tareas `approved`.
+
 ## Ejemplos
 
 ```bash

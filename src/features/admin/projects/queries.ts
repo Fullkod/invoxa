@@ -57,6 +57,7 @@ export function useCreateProject() {
           name: input.name,
           description: input.description ?? null,
           status: input.status,
+          requires_approval: input.requires_approval ?? false,
         })
         .select()
         .single()
@@ -79,6 +80,9 @@ export function useUpdateProject(id: string) {
           name: input.name,
           description: input.description ?? null,
           status: input.status,
+          ...(input.requires_approval !== undefined && {
+            requires_approval: input.requires_approval,
+          }),
         })
         .eq('id', id)
         .select()

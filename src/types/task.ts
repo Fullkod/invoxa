@@ -1,4 +1,5 @@
 import type { Project } from './project'
+import type { ReviewStatus } from './supervision'
 
 /** 'api' = created through agent-api with a personal key (PRP-002). */
 export type TaskSource = 'app' | 'api'
@@ -14,6 +15,12 @@ export type Task = {
   task_date: string
   hours: number
   observations: string | null
+  /** PRP-003 review state; only the review RPCs change it. */
+  review_status?: ReviewStatus
+  proposed_hours?: number | null
+  review_comment?: string | null
+  response_comment?: string | null
+  reviewed_at?: string | null
   created_at: string
   updated_at: string
 }

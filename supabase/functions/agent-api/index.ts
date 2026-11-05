@@ -207,7 +207,7 @@ function hourlyProject(projects: MyProject[], ref: string): MyProject {
 }
 
 const TASK_SELECT =
-  'id, task_date, hours, name, description, observations, source, invoice_id, created_at, updated_at, project:projects(id, name)'
+  'id, task_date, hours, name, description, observations, source, invoice_id, review_status, proposed_hours, review_comment, created_at, updated_at, project:projects(id, name)'
 
 type TaskRow = {
   id: string
@@ -218,6 +218,9 @@ type TaskRow = {
   observations: string | null
   source: string
   invoice_id: string | null
+  review_status: string
+  proposed_hours: number | null
+  review_comment: string | null
   created_at: string
   updated_at: string
   project: { id: string; name: string } | null
@@ -233,6 +236,12 @@ function presentTask(t: TaskRow) {
     observations: t.observations,
     project: t.project,
     billed: t.invoice_id !== null,
+    // PRP-003: editing a reviewed task sends it back to 'pending' (DB trigger).
+    review: {
+      status: t.review_status,
+      proposed_hours: t.proposed_hours === null ? null : Number(t.proposed_hours),
+      comment: t.review_comment,
+    },
     source: t.source,
     created_at: t.created_at,
     updated_at: t.updated_at,

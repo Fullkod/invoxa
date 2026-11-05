@@ -18,6 +18,7 @@ import {
   type ApiKeyNameValues,
   type CreatedApiKey,
 } from './queries'
+import { SkillDownload } from './SkillDownload'
 
 /**
  * "Acceso para agentes" (PRP-002): personal API keys so Claude Code, Codex or
@@ -170,6 +171,8 @@ export function AgentAccessCard() {
             <code>GET /</code> para ver los endpoints.
           </p>
         </div>
+
+        <SkillDownload />
       </CardBody>
     </Card>
   )

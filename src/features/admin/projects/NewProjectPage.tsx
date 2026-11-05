@@ -36,6 +36,7 @@ export function NewProjectPage() {
                   name: values.name,
                   description: values.description ?? null,
                   status: values.status,
+                  requires_approval: values.requires_approval,
                 })
                 navigate(`/admin/projects/${project.id}`, { replace: true })
               }}

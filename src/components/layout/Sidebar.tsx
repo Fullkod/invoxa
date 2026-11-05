@@ -1,6 +1,7 @@
 import {
   Building2,
   ChevronDown,
+  ClipboardCheck,
   Files,
   FileText,
   FolderKanban,
@@ -21,6 +22,7 @@ import isotipoCafe from '/brand/isotipo-cafe.svg'
 import { canUseAdminArea, roleLabel } from '../../features/auth/roles'
 import { useAuth } from '../../features/auth/useAuth'
 import { useCurrentCompany } from '../../features/companies/queries'
+import { useIsSupervisor } from '../../features/review/queries'
 import type { Profile, UserRole } from '../../types/profile'
 
 type NavItem = {
@@ -51,6 +53,11 @@ const adminSections: NavSection[] = [
         label: 'Proyectos',
         icon: <FolderKanban size={18} />,
       },
+      {
+        to: '/admin/review',
+        label: 'Revisión de horas',
+        icon: <ClipboardCheck size={18} />,
+      },
     ],
   },
   {
@@ -78,11 +85,19 @@ const superSection: NavSection = {
   ],
 }
 
-function sectionsFor(profile: Profile): NavSection[] {
+const reviewSection: NavSection = {
+  title: 'Equipo',
+  items: [
+    { to: '/app/review', label: 'Revisión de horas', icon: <ClipboardCheck size={18} /> },
+  ],
+}
+
+function sectionsFor(profile: Profile, isSupervisor: boolean): NavSection[] {
   if (profile.role === 'super_admin') {
     return canUseAdminArea(profile) ? [superSection, ...adminSections] : [superSection]
   }
-  return profile.role === 'admin' ? adminSections : userSections
+  if (profile.role === 'admin') return adminSections
+  return isSupervisor ? [...userSections, reviewSection] : userSections
 }
 
 const userSections: NavSection[] = [
@@ -124,7 +139,11 @@ export function Sidebar({
   collapsed?: boolean
   onToggleCollapsed?: () => void
 }) {
-  const sections = sectionsFor(profile)
+  const { data: isSupervisor = false } = useIsSupervisor(
+    profile.id,
+    profile.role === 'user',
+  )
+  const sections = sectionsFor(profile, isSupervisor)
   const { data: company } = useCurrentCompany()
   const isSuperAdmin = profile.role === 'super_admin'
   const companyName = company?.name ?? (isSuperAdmin ? 'Sin empresa' : '…')

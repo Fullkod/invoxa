@@ -8,6 +8,8 @@
 - [2026-11-04 — Titan Factory para Claude Code y Codex](project/2026-11-04-titan-factory-dual.md)
 - [2026-11-04 — Invoxa multi-empresa: companies, RLS por empresa, super admin invoxa@fullkod.com](project/2026-11-04-multi-empresa.md)
 - [2026-11-04 — API para agentes (PRP-002): keys personales, solo colaboradores, skill invoxa](project/2026-11-04-api-para-agentes.md)
+- [2026-11-05 — Auditoría de aislamiento entre empresas: hecha, fuga en 4 RPCs (fix 20261105000000)](project/2026-11-05-auditoria-aislamiento.md)
+- [2026-11-05 — PRP-003 supervisión de horas: responsables por proyecto, sin importes; mes bloqueado con tareas sin aprobar (INV0014)](../plans/PRP-003-supervision-horas.md)
 - [2026-11-05 — BD traspasada a la org Pro de CommerceCraft (hecho y verificado; backups, pendientes)](project/2026-11-05-traspaso-bd-commercecraft.md)
 - [2026-11-05 — Correos de Auth desde «Invoxa» <no-reply@fullkod.com> por Resend, plantillas en español](project/2026-11-05-correo-auth-resend.md)
 

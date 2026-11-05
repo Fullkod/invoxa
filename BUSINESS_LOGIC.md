@@ -42,7 +42,11 @@ que lo invita. Los usuarios de una empresa desactivada no pueden usar la app.
   (`supabase/functions/_shared/company.ts`).
 - Consecutivo: `{PREFIJO_EMPRESA}-{USER_CODE}-{AÑO}-{NNNN}` (Informage = `INF`); `user_code` y número
   de factura son únicos **por empresa**.
-- Prueba de aislamiento: `supabase/tests/company_isolation_test.sql`.
+- Funciones SQL privilegiadas (`generate_user_invoice`, `apply_invoice_number_change`, `next_invoice_number`,
+  `notify_user`): solo `service_role` puede ejecutarlas (fuga cerrada en la auditoría del 2026-11-05,
+  migración `20261105000000`). Toda función nueva declara sus grants.
+- Prueba de aislamiento: `supabase/tests/company_isolation_test.sql` (todas las tablas + RPCs; cualquier
+  token terminado en `!` es una fuga). Evidencia: `.titan/qa/2026-11-05-isolation-audit/`.
 
 ## Entidades
 
@@ -101,6 +105,26 @@ banco, cuenta, método de pago, notas por defecto) es opcional y aparece en el P
   como admin, y deja de valer al revocarla (él o el admin de su empresa), si el usuario pasa a `inactive` o
   si su empresa se desactiva. Las tareas creadas así llevan `tasks.source = 'api'` y se ven con la marca
   "Agente". Skill para agentes: `.claude/skills/invoxa/` (gemelo Codex en `plugins/titan-factory-codex/skills/invoxa/`).
+
+### 4b. Revisión de horas por responsables (PRP-003, 2026-11-05)
+
+- En cada proyecto, el admin nombra **responsables** (cualquier persona activa de la empresa) y les asigna
+  los colaboradores **por hora** que revisan (`project_supervisions`). Es por proyecto y por persona: R1
+  puede revisar a A en X y a B en Y, y un proyecto puede tener varios responsables.
+- Cada tarea tiene un estado de revisión (`tasks.review_status`): `pending` → `approved`, o
+  `changes_proposed` (el responsable **propone** otras horas con un comentario). El colaborador acepta (las
+  horas cambian y queda aprobada) o la rechaza con un motivo (vuelve a `pending`). El admin también puede
+  **ajustar y aprobar** directamente. Nadie revisa sus propias tareas ni tareas facturadas.
+- Editar una tarea ya revisada la devuelve a `pending` (también por la Agent API).
+- **Privacidad:** el responsable no tiene acceso RLS nuevo; ve fecha, horas, nombre y descripción a través
+  de RPCs (`list_review_tasks`, `review_task`). Nunca ve tarifas, facturas ni datos de cobro.
+- Proyecto con **"Exigir aprobación"** (`projects.requires_approval`, apagado por defecto): **no se puede
+  facturar el mes** mientras haya tareas del periodo sin aprobar en ese proyecto (decisión de Roberto,
+  2026-11-05). `generate_user_invoice` lo rechaza y la pantalla "Generar factura" lo avisa antes con el
+  número de tareas y el proyecto. Así ninguna hora se queda fuera de su factura.
+- Avisos in-app: al responsable cuando su gente registra horas y cuando le responden; al colaborador cuando
+  revisan su tarea. Bandejas: `/app/review` (responsable) y `/admin/review` (admin).
+- Prueba: `supabase/tests/supervision_test.sql`.
 
 ### 5. Solicitud de facturas (admin)
 
@@ -198,6 +222,7 @@ facturación, asignaciones, tarifas, tareas y solicitudes recibidas.
 7. Las líneas de factura son instantáneas: cambiar una tarifa no altera facturas emitidas.
 8. Los datos financieros no se borran: un usuario con facturas no se puede eliminar.
 9. Cada usuario ve solo sus datos; el admin ve todo (RLS en todas las tablas).
+10. Un responsable solo ve las tareas de sus colaboradores en ese proyecto, y nunca importes.
 
 ## Diferencias con el brief (`docs/instructions.md`)
 
@@ -219,3 +244,6 @@ facturación, asignaciones, tarifas, tareas y solicitudes recibidas.
 - **`expired`** existe en solicitudes y en la UI, pero nada pone una solicitud en ese estado.
 - ~~Secuencia anual~~ — se reinicia cada año desde 2026-11-04 (PRP-001 fase 0).
 - **Impuestos:** siempre 0.
+- ~~Aprobación tardía~~ — resuelto 2026-11-05: con "Exigir aprobación" el mes no se factura con tareas sin
+  aprobar.
+- **Fechas en UTC:** la fecha de inicio de asignaciones se ve un día antes (`new Date('YYYY-MM-DD')`).

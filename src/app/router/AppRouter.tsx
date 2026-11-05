@@ -113,6 +113,11 @@ const UserDashboardPage = lazy(() =>
     default: m.UserDashboardPage,
   })),
 )
+const ReviewInboxPage = lazy(() =>
+  import('../../features/review/ReviewInboxPage').then((m) => ({
+    default: m.ReviewInboxPage,
+  })),
+)
 const NotificationsPage = lazy(() =>
   import('../../features/notifications/NotificationsPage').then((m) => ({
     default: m.NotificationsPage,
@@ -302,6 +307,14 @@ export function AppRouter() {
             }
           />
           <Route
+            path="/admin/review"
+            element={
+              <AdminRoute>
+                <ReviewInboxPage isAdmin />
+              </AdminRoute>
+            }
+          />
+          <Route
             path="/admin/notifications"
             element={
               <AdminRoute>
@@ -350,6 +363,14 @@ export function AppRouter() {
             element={
               <UserRoute>
                 <BillingProfilePage />
+              </UserRoute>
+            }
+          />
+          <Route
+            path="/app/review"
+            element={
+              <UserRoute>
+                <ReviewInboxPage isAdmin={false} />
               </UserRoute>
             }
           />

@@ -31,10 +31,12 @@ export function ProjectForm({
       name: initialValues?.name ?? '',
       description: initialValues?.description ?? '',
       status: initialValues?.status ?? 'active',
+      requires_approval: initialValues?.requires_approval ?? false,
     },
   })
 
   const status = watch('status')
+  const requiresApproval = watch('requires_approval')
 
   const submit = handleSubmit(async (values) => {
     setServerError(null)
@@ -103,6 +105,26 @@ export function ProjectForm({
           })}
         </div>
       </div>
+
+      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-subtle px-4 py-3 hover:border-border-strong">
+        <input
+          type="checkbox"
+          className="mt-0.5 h-4 w-4 accent-primary"
+          checked={requiresApproval}
+          onChange={(e) =>
+            setValue('requires_approval', e.target.checked, { shouldDirty: true })
+          }
+        />
+        <span>
+          <span className="block text-sm font-semibold text-text">
+            Exigir aprobación de horas para facturar
+          </span>
+          <span className="mt-0.5 block text-xs text-muted">
+            Solo entran en la factura las tareas aprobadas por un responsable o
+            un admin. Revisa las pendientes antes de pedir las facturas del mes.
+          </span>
+        </span>
+      </label>
 
       {serverError && (
         <p className="rounded-md bg-red/10 px-3 py-2 text-xs text-red">

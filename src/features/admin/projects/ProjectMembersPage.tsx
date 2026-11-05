@@ -16,6 +16,7 @@ import { Pill } from '../../../components/ui/Pill'
 import type { ProjectMember } from '../../../types/assignment'
 import { useEndAssignment, useProjectMembers } from './membersQueries'
 import { useProject } from './queries'
+import { SupervisorsCard } from './SupervisorsCard'
 
 export function ProjectMembersPage() {
   const { id } = useParams<{ id: string }>()
@@ -100,6 +101,12 @@ export function ProjectMembersPage() {
           />
         )}
       </Card>
+
+      {id && current.length > 0 && (
+        <div className="mt-6">
+          <SupervisorsCard projectId={id} members={current} />
+        </div>
+      )}
 
       {past.length > 0 && (
         <div className="mt-6">

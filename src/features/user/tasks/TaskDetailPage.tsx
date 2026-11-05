@@ -12,6 +12,9 @@ import {
   useUpdateTask,
 } from './queries'
 import { TaskForm } from './TaskForm'
+import { useAuth } from '../../auth/useAuth'
+import { isReviewRelevant, useMySupervisedProjectIds } from '../../review/queries'
+import { TaskReviewPanel } from '../../review/TaskReviewPanel'
 
 export function TaskDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -20,6 +23,8 @@ export function TaskDetailPage() {
   const { data: projects = [] } = useMyHourlyProjects()
   const updateTask = useUpdateTask(id ?? '')
   const deleteTask = useDeleteTask()
+  const { session } = useAuth()
+  const { data: supervised } = useMySupervisedProjectIds(session?.user.id)
 
   if (isLoading) {
     return (
@@ -101,7 +106,7 @@ export function TaskDetailPage() {
           </Pill>
         ) : (
           <Pill tone="amber" dot>
-            Pendiente
+            Sin facturar
           </Pill>
         )
       }
@@ -126,6 +131,8 @@ export function TaskDetailPage() {
           </div>
         )}
 
+        {!billed && isReviewRelevant(task, supervised) && <TaskReviewPanel task={task} />}
+
         <Card>
           <CardHeader
             title={billed ? 'Detalles de la tarea' : 'Editar tarea'}
@@ -137,7 +144,7 @@ export function TaskDetailPage() {
           />
           <CardBody>
             <TaskForm
-              key={task.id}
+              key={`${task.id}-${task.updated_at}`}
               initial={task}
               projects={projectsForForm}
               submitLabel="Guardar cambios"

@@ -108,6 +108,30 @@ export function useInvoicePreview({
         blockers.push('Ya existe una factura para este periodo')
       }
 
+      // PRP-003: projects that require approval block the month while any
+      // task of the period is not approved (same rule as generate_user_invoice).
+      const { data: unapproved } = await supabase
+        .from('tasks')
+        .select('id, project:projects!inner(name, requires_approval)')
+        .eq('user_id', userId)
+        .gte('task_date', periodStart)
+        .lte('task_date', periodEnd)
+        .is('invoice_id', null)
+        .neq('review_status', 'approved')
+        .eq('project.requires_approval', true)
+      const unapprovedRows = (unapproved ?? []) as unknown as {
+        id: string
+        project: { name: string } | null
+      }[]
+      if (unapprovedRows.length > 0) {
+        const names = [...new Set(unapprovedRows.map((t) => t.project?.name).filter(Boolean))]
+        blockers.push(
+          `Tienes ${unapprovedRows.length} ${
+            unapprovedRows.length === 1 ? 'tarea sin aprobar' : 'tareas sin aprobar'
+          } en ${names.join(', ')}. Tu responsable debe revisarlas (o responde a sus propuestas) antes de cerrar el mes.`,
+        )
+      }
+
       // Two separate queries: there's no single foreign key between
       // compensation_settings and user_project_assignments (they share
       // user_id + project_id only), so Postgrest can't resolve the embed.

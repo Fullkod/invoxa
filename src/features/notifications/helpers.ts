@@ -26,6 +26,10 @@ export function getNotificationHref(
       return isAdmin
         ? `/admin/invoice-number-requests`
         : `/app/invoice-number-requests`
+    case 'tasks':
+      return `/app/tasks/${resource_id}`
+    case 'task_review':
+      return isAdmin ? '/admin/review' : '/app/review'
     default:
       return null
   }
