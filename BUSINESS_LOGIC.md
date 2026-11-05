@@ -246,4 +246,4 @@ facturación, asignaciones, tarifas, tareas y solicitudes recibidas.
 - **Impuestos:** siempre 0.
 - ~~Aprobación tardía~~ — resuelto 2026-11-05: con "Exigir aprobación" el mes no se factura con tareas sin
   aprobar.
-- **Fechas en UTC:** la fecha de inicio de asignaciones se ve un día antes (`new Date('YYYY-MM-DD')`).
+- ~~Fechas en UTC~~ — resuelto 2026-11-05: las fechas sin hora se leen como locales (`src/lib/dates/dateOnly.ts`).

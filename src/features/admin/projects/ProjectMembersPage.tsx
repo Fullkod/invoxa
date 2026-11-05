@@ -13,6 +13,7 @@ import { AppShell } from '../../../components/layout/AppShell'
 import { Button } from '../../../components/ui/Button'
 import { Card, CardBody, CardHeader } from '../../../components/ui/Card'
 import { Pill } from '../../../components/ui/Pill'
+import { parseDateOnly } from '../../../lib/dates/dateOnly'
 import type { ProjectMember } from '../../../types/assignment'
 import { useEndAssignment, useProjectMembers } from './membersQueries'
 import { useProject } from './queries'
@@ -366,7 +367,7 @@ function formatRate(c: { payment_type: 'hourly' | 'fixed'; hourly_rate: number |
 }
 
 function formatDate(value: string) {
-  return new Date(value).toLocaleDateString('es-CO', {
+  return parseDateOnly(value).toLocaleDateString('es-CO', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

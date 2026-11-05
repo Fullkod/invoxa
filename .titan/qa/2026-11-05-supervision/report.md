@@ -42,8 +42,9 @@ supervisiones de QA). Scripts: `ui.mjs` (este directorio) y `setup.mjs` (scratch
 - **Corregido durante el QA:** el `<select>` "Responsable" no estaba asociado a su etiqueta (accesibilidad).
 - **Cambio menor:** el pill de la cabecera de la tarea dice "Sin facturar" en vez de "Pendiente", para no
   confundirlo con el estado de revisión.
-- **Bug previo, no de este PRP:** la fecha de inicio de las asignaciones se ve un día antes ("31 de oct"
-  para 2026-11-01): `new Date('YYYY-MM-DD')` se interpreta en UTC (`ProjectMembersPage.formatDate`).
+- **Bug previo, no de este PRP (corregido después, 2026-11-05):** la fecha de inicio de las asignaciones se
+  veía un día antes ("31 de oct" para 2026-11-01) porque `new Date('YYYY-MM-DD')` es UTC. Fix:
+  `parseDateOnly` en `src/lib/dates/dateOnly.ts` (colaboradores del proyecto y detalle de usuario).
 
 ## No probado
 - Rechazar una propuesta desde la UI (cubierto por el test SQL vía RPC, no en Playwright).

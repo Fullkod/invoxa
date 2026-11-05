@@ -8,6 +8,7 @@ import { Pill } from '../../../components/ui/Pill'
 import { useUserAssignments } from '../projects/membersQueries'
 import type { UserStatus } from '../../../types/profile'
 import { DeleteUserModal } from './DeleteUserModal'
+import { parseDateOnly } from '../../../lib/dates/dateOnly'
 import {
   useUpdateUserRole,
   useUpdateUserStatus,
@@ -400,7 +401,7 @@ function formatDate(value: string) {
 }
 
 function formatDateShort(value: string) {
-  return new Date(value).toLocaleDateString('es-CO', {
+  return parseDateOnly(value).toLocaleDateString('es-CO', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
