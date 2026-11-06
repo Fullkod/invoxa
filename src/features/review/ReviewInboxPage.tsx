@@ -44,14 +44,41 @@ export function ReviewInboxPage({ isAdmin }: { isAdmin: boolean }) {
     status,
   })
 
-  const projects = useMemo(() => {
-    const map = new Map<string, string>()
-    for (const t of tasks) map.set(t.project_id, t.project_name)
-    return [...map.entries()].sort((a, b) => a[1].localeCompare(b[1]))
+  const [memberFilter, setMemberFilter] = useState('all')
+  const [dayFilter, setDayFilter] = useState('all')
+
+  const { projects, members, days } = useMemo(() => {
+    const projectMap = new Map<string, string>()
+    const memberMap = new Map<string, string>()
+    const daySet = new Set<string>()
+    for (const t of tasks) {
+      projectMap.set(t.project_id, t.project_name)
+      memberMap.set(t.member_id, t.member_name)
+      daySet.add(t.task_date)
+    }
+    const byName = (a: [string, string], b: [string, string]) => a[1].localeCompare(b[1])
+    return {
+      projects: [...projectMap.entries()].sort(byName),
+      members: [...memberMap.entries()].sort(byName),
+      days: [...daySet].sort(),
+    }
   }, [tasks])
 
-  const visible =
-    projectFilter === 'all' ? tasks : tasks.filter((t) => t.project_id === projectFilter)
+  // A filter whose value is not in the loaded tasks (other month or status)
+  // falls back to "all" instead of leaving an empty list behind.
+  const project = projects.some(([id]) => id === projectFilter) ? projectFilter : 'all'
+  const member = members.some(([id]) => id === memberFilter) ? memberFilter : 'all'
+  const day = days.includes(dayFilter) ? dayFilter : 'all'
+
+  const visible = tasks.filter(
+    (t) =>
+      (project === 'all' || t.project_id === project) &&
+      (member === 'all' || t.member_id === member) &&
+      (day === 'all' || t.task_date === day),
+  )
+  const visibleHours = visible.reduce((sum, t) => sum + t.hours, 0)
+  const selectClass =
+    'h-9 rounded-full border border-border bg-surface px-3 text-xs font-semibold text-text-sec'
 
   return (
     <AppShell
@@ -82,9 +109,9 @@ export function ReviewInboxPage({ isAdmin }: { isAdmin: boolean }) {
         </div>
         {projects.length > 1 && (
           <select
-            value={projectFilter}
+            value={project}
             onChange={(e) => setProjectFilter(e.target.value)}
-            className="h-9 rounded-full border border-border bg-surface px-3 text-xs font-semibold text-text-sec"
+            className={selectClass}
             aria-label="Filtrar por proyecto"
           >
             <option value="all">Todos los proyectos</option>
@@ -95,7 +122,44 @@ export function ReviewInboxPage({ isAdmin }: { isAdmin: boolean }) {
             ))}
           </select>
         )}
+        {members.length > 1 && (
+          <select
+            value={member}
+            onChange={(e) => setMemberFilter(e.target.value)}
+            className={selectClass}
+            aria-label="Filtrar por persona"
+          >
+            <option value="all">Todas las personas</option>
+            {members.map(([id, name]) => (
+              <option key={id} value={id}>
+                {name.replace(/\s+/g, ' ')}
+              </option>
+            ))}
+          </select>
+        )}
+        {days.length > 1 && (
+          <select
+            value={day}
+            onChange={(e) => setDayFilter(e.target.value)}
+            className={selectClass}
+            aria-label="Filtrar por día"
+          >
+            <option value="all">Todos los días</option>
+            {days.map((d) => (
+              <option key={d} value={d}>
+                {format(new Date(`${d}T00:00:00`), "EEE d 'de' MMM", { locale: es })}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
+
+      {!isLoading && !error && visible.length > 0 && (
+        <p className="mb-3 text-xs font-semibold text-text-sec">
+          {visible.length} {visible.length === 1 ? 'tarea' : 'tareas'} ·{' '}
+          {Number(visibleHours.toFixed(2))} h
+        </p>
+      )}
 
       {isLoading ? (
         <p className="py-12 text-center text-sm text-muted">Cargando…</p>
